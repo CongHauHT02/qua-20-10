@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mừng Ngày 20/10 - Món Quà Từ Vũ Trụ ❤️</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'serif'],
+            cursive: ['"Dancing Script"', 'cursive'],
+            greatvibes: ['"Great Vibes"', 'cursive'],
+            sans: ['"Montserrat"', 'sans-serif'],
+          },
+          colors: {
+            romantic: {
+              gold: '#ffd166',
+              rose: '#ff4d6d',
+              pink: '#ff758f',
+              deep: '#060814',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Three.js & GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    /* Custom Scrollbar & Utilities */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 77, 109, 0.5); border-radius: 9999px; }
+
+    /* Glowing Animations */
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 25px rgba(255, 77, 109, 0.4), 0 0 60px rgba(255, 117, 143, 0.2); }
+      50% { box-shadow: 0 0 45px rgba(255, 77, 109, 0.8), 0 0 90px rgba(255, 209, 102, 0.4); }
+    }
+    .pulse-glow { animation: pulseGlow 3s infinite ease-in-out; }
+
+    @keyframes haloRotate {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.06); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    .halo-aura { animation: haloRotate 12s linear infinite; }
+
+    @keyframes floatGentle {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(1deg); }
+    }
+    .float-card { animation: floatGentle 4.5s ease-in-out infinite; }
+
+    @keyframes floatWord1 {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(-12px) translateX(6px); }
+    }
+    @keyframes floatWord2 {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(-8px) translateX(-8px); }
+    }
+    .float-word-1 { animation: floatWord1 4s ease-in-out infinite; }
+    .float-word-2 { animation: floatWord2 5s ease-in-out infinite; }
+
+    .scanline {
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(255, 77, 109, 0.15) 50%, rgba(255,255,255,0));
+      background-size: 100% 4px;
+    }
+  </style>
+</head>
+<body class="bg-[#050714] text-white font-sans overflow-x-hidden select-none m-0 p-0">
+
+  <!-- Three.js Background Canvas -->
+  <canvas id="webgl-canvas" class="fixed inset-0 w-full h-full z-0 block"></canvas>
+
+  <!-- Flower & Heart Rain Canvas (Canvas 2D) -->
+  <canvas id="flower-canvas" class="fixed inset-0 w-full h-full z-20 pointer-events-none opacity-0 transition-opacity duration-1000"></canvas>
+
+  <!-- Firework / Confetti Hearts Canvas -->
+  <canvas id="burst-canvas" class="fixed inset-0 w-full h-full z-40 pointer-events-none"></canvas>
+
+  <!-- Top Right Audio Control Button -->
+  <div class="fixed top-5 right-5 z-50 flex items-center gap-3">
+    <button id="btn-audio" class="flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-900/70 hover:bg-slate-800/80 backdrop-blur-md border border-rose-500/40 text-rose-300 shadow-[0_0_15px_rgba(255,77,109,0.3)] transition-all transform hover:scale-105 active:scale-95 cursor-pointer">
+      <i id="audio-icon" class="fa-solid fa-volume-high text-sm"></i>
+      <div id="eq-bars" class="flex items-end gap-1 h-3.5">
+        <span class="w-1 bg-rose-400 rounded-full h-full animate-bounce" style="animation-duration: 0.6s"></span>
+        <span class="w-1 bg-pink-400 rounded-full h-2/3 animate-bounce" style="animation-duration: 0.8s"></span>
+        <span class="w-1 bg-amber-300 rounded-full h-4/5 animate-bounce" style="animation-duration: 0.5s"></span>
+      </div>
+      <span class="text-xs font-medium tracking-wide hidden sm:inline">Giai Điệu</span>
+    </button>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- SCENE 0: GIAO DIỆN BẮT ĐẦU                     -->
+  <!-- ============================================== -->
+  <div id="screen-start" class="fixed inset-0 z-30 flex flex-col items-center justify-center p-6 bg-radial from-slate-900/60 via-[#050714]/90 to-[#03040b]">
+    <div class="max-w-lg w-full text-center space-y-7 relative">
+      
+      <!-- Decorative Glow Behind -->
+      <div class="absolute -inset-10 bg-gradient-to-tr from-rose-500/20 via-pink-500/10 to-amber-500/20 blur-3xl -z-10 rounded-full pointer-events-none"></div>
+
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/15 border border-rose-400/40 text-rose-300 text-xs font-semibold tracking-widest uppercase shadow-[0_0_20px_rgba(255,77,109,0.3)]">
+        <i class="fa-solid fa-sparkles text-amber-300 animate-spin" style="animation-duration: 6s"></i>
+        20 Tháng 10 • Ngày Phụ Nữ Việt Nam
+      </div>
+
+      <!-- Main Title -->
+      <div class="space-y-3">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif font-bold tracking-tight bg-gradient-to-r from-rose-200 via-pink-100 to-amber-200 bg-clip-text text-transparent drop-shadow-[0_2px_15px_rgba(255,77,109,0.4)]">
+          Món Quà Từ Vũ Trụ
+        </h1>
+        <p class="text-base sm:text-lg text-rose-200/80 font-light max-w-md mx-auto leading-relaxed">
+          Giữa hàng tỷ vì sao trong thiên hà bao la, có một tọa độ đặc biệt nơi lưu giữ điều tuyệt vời nhất...
+        </p>
+      </div>
+
+      <!-- Big Magic Button -->
+      <div class="pt-4">
+        <button id="btn-start" class="group relative inline-flex items-center justify-center gap-3.5 px-8 sm:px-10 py-4 sm:py-5 rounded-full bg-gradient-to-r from-rose-600 via-pink-600 to-amber-500 text-white font-medium text-lg sm:text-xl shadow-[0_0_35px_rgba(255,77,109,0.6)] hover:shadow-[0_0_55px_rgba(255,77,109,0.9)] transform hover:scale-105 active:scale-95 transition-all duration-300 border border-white/30 overflow-hidden cursor-pointer">
+          <!-- Shimmer reflection effect -->
+          <div class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+          
+          <i class="fa-solid fa-compass text-amber-200 group-hover:rotate-45 transition-transform duration-500 text-xl"></i>
+          <span class="tracking-wider font-semibold">Khám Phá Bí Mật</span>
+          <i class="fa-solid fa-arrow-right text-rose-200 group-hover:translate-x-1.5 transition-transform duration-300 text-base"></i>
+        </button>
+      </div>
+
+      <!-- Music Recommendation Note -->
+      <p class="text-xs sm:text-sm text-slate-400/80 flex items-center justify-center gap-2 pt-2">
+        <i class="fa-solid fa-headphones text-rose-400"></i>
+        <span>Hãy bật âm lượng để cảm nhận trọn vẹn sự lãng mạn</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- SCENE 2: TỌA ĐỘ ĐẶC BIỆT & STREET VIEW         -->
+  <!-- ============================================== -->
+  <div id="screen-coord" class="fixed inset-0 z-20 flex flex-col items-center justify-center p-4 sm:p-6 pointer-events-none opacity-0">
+    
+    <!-- Holographic Radar & Target HUD Overlay -->
+    <div class="w-full max-w-xl mx-auto flex flex-col items-center gap-5">
+      
+      <!-- Target Scan Badge -->
+      <div id="coord-badge" class="flex items-center gap-3 px-5 py-2 rounded-full bg-slate-900/80 border border-rose-500/50 backdrop-blur-md shadow-[0_0_25px_rgba(255,77,109,0.4)] transform -translate-y-6 transition-all duration-700">
+        <span class="relative flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+        </span>
+        <span class="text-xs sm:text-sm font-semibold tracking-widest text-rose-200 uppercase">
+          <i class="fa-solid fa-location-crosshairs mr-1.5 text-amber-300"></i> TỌA ĐỘ YÊU THƯƠNG ĐÃ ĐƯỢC KHÓA
+        </span>
+      </div>
+
+      <!-- Street View Card Container -->
+      <div id="streetview-card" class="w-full max-w-lg bg-slate-900/85 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-3 sm:p-4 border border-rose-500/40 shadow-[0_10px_50px_rgba(255,77,109,0.35)] transform scale-90 opacity-0 transition-all duration-700 float-card">
+        
+        <!-- Street View Header Bar -->
+        <div class="flex items-center justify-between pb-3 px-2 border-b border-white/10 text-xs sm:text-sm text-slate-300">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-rose-400">
+              <i class="fa-solid fa-map-pin text-sm"></i>
+            </div>
+            <div>
+              <div class="font-bold text-white tracking-wide">125 Đ. Ngô Quyền, Bến Cát</div>
+              <div class="text-[11px] text-rose-300/80">11°09'40.0"N • 106°36'31.3"E</div>
+            </div>
+          </div>
+          <span class="px-2.5 py-1 rounded-md bg-white/10 text-[11px] text-slate-300 font-medium flex items-center gap-1.5">
+            <i class="fa-solid fa-street-view text-amber-400"></i> Street View
+          </span>
+        </div>
+
+        <!-- Street View Photo Frame -->
+        <div class="relative mt-3 rounded-xl overflow-hidden aspect-[4/3] bg-black/60 shadow-inner group">
+          <img id="img-streetview" src="streetview.jpg" alt="125 Đ. Ngô Quyền, Bến Cát" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          
+          <!-- Google Maps Style Corner Badge -->
+          <div class="absolute bottom-2.5 left-2.5 px-3 py-1.5 rounded-lg bg-black/70 backdrop-blur-md text-[11px] text-white flex items-center gap-2 border border-white/20">
+            <i class="fa-solid fa-location-dot text-rose-400"></i>
+            <span>Nơi Kỷ Niệm Bắt Đầu</span>
+          </div>
+
+          <!-- Crosshair Radar Scanning Effect -->
+          <div class="absolute inset-0 scanline pointer-events-none opacity-40"></div>
+        </div>
+
+        <!-- Footer Caption -->
+        <div class="pt-3 px-2 text-center">
+          <p class="text-xs sm:text-sm text-rose-200/90 font-light italic">
+            "Tọa độ bình yên nơi thế giới dịu dàng chào đón một người đặc biệt..."
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- SCENE 4: NGƯỜI YÊU & MƯA HOA & THƯ CHÚC        -->
+  <!-- ============================================== -->
+  <div id="screen-final" class="fixed inset-0 z-20 flex items-center justify-center p-4 sm:p-6 overflow-y-auto pointer-events-auto opacity-0 transition-opacity duration-1000">
+    
+    <div class="w-full max-w-5xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 py-8 relative">
+
+      <!-- Floating Orbiting Word Badges Around -->
+      <div id="word-tag-1" class="absolute -top-3 left-4 sm:left-12 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-pink-400/50 backdrop-blur-md text-xs sm:text-sm text-pink-200 font-medium shadow-[0_0_20px_rgba(255,117,143,0.4)] float-word-1 hidden sm:flex items-center gap-2 z-30">
+        <span>🌸 Xinh đẹp nhất vũ trụ</span>
+      </div>
+      <div id="word-tag-2" class="absolute top-1/2 -left-6 sm:left-2 -translate-y-1/2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-amber-400/50 backdrop-blur-md text-xs sm:text-sm text-amber-200 font-medium shadow-[0_0_20px_rgba(255,209,102,0.4)] float-word-2 hidden md:flex items-center gap-2 z-30">
+        <span>✨ Nụ cười tỏa nắng</span>
+      </div>
+      <div id="word-tag-3" class="absolute -bottom-2 left-1/4 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-rose-400/50 backdrop-blur-md text-xs sm:text-sm text-rose-200 font-medium shadow-[0_0_20px_rgba(255,77,109,0.4)] float-word-1 hidden sm:flex items-center gap-2 z-30">
+        <span>💖 Hạnh phúc ngập tràn</span>
+      </div>
+      <div id="word-tag-4" class="absolute top-4 right-8 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-purple-400/50 backdrop-blur-md text-xs sm:text-sm text-purple-200 font-medium shadow-[0_0_20px_rgba(192,132,252,0.4)] float-word-2 hidden sm:flex items-center gap-2 z-30">
+        <span>👑 Công chúa của anh</span>
+      </div>
+      <div id="word-tag-5" class="absolute -bottom-4 right-12 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-rose-400/50 backdrop-blur-md text-xs sm:text-sm text-rose-200 font-medium shadow-[0_0_20px_rgba(255,77,109,0.4)] float-word-1 hidden md:flex items-center gap-2 z-30">
+        <span>🌹 20/10 Rực Rỡ & May Mắn</span>
+      </div>
+
+      <!-- LEFT: GIRLFRIEND PORTRAIT CARD WITH GLOWING HALO AURA -->
+      <div id="girlfriend-container" class="relative flex-shrink-0 w-full max-w-[280px] sm:max-w-[320px] md:max-w-[340px] flex flex-col items-center">
+        
+        <!-- Ethereal Radiant Aura Halo (Rotates & Pulses) -->
+        <div class="absolute -inset-6 sm:-inset-8 rounded-[40px] bg-gradient-to-tr from-rose-500/60 via-pink-500/40 to-amber-400/50 blur-2xl halo-aura opacity-80 -z-10"></div>
+        <div class="absolute -inset-2 rounded-[32px] bg-gradient-to-r from-rose-500 via-pink-400 to-amber-300 blur-md opacity-60 -z-10 pulse-glow"></div>
+
+        <!-- Glassmorphism Card Frame -->
+        <div class="w-full bg-slate-900/85 backdrop-blur-2xl rounded-3xl p-3 sm:p-4 border-2 border-pink-400/50 shadow-[0_15px_60px_rgba(255,77,109,0.5)] float-card relative overflow-hidden">
+          
+          <!-- Top Badge -->
+          <div class="flex items-center justify-between pb-2.5 px-1">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/25 border border-rose-400/50 text-rose-200 text-[11px] font-semibold tracking-wider">
+              <i class="fa-solid fa-crown text-amber-300 text-xs"></i> Nàng Thơ Của Anh
+            </div>
+            <span class="text-[11px] text-pink-300/80 font-medium">20.10.2026</span>
+          </div>
+
+          <!-- Girlfriend Portrait Photo -->
+          <div class="relative rounded-2xl overflow-hidden aspect-[9/16] bg-black/60 shadow-xl group border border-white/20">
+            <img id="img-girlfriend" src="girlfriend.jpg" alt="Người Yêu Xinh Đẹp" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            
+            <!-- Bottom Golden Shimmer Badge Overlay -->
+            <div class="absolute bottom-3 inset-x-3 p-2.5 rounded-xl bg-slate-950/75 backdrop-blur-md border border-pink-400/30 text-center shadow-lg">
+              <p class="font-cursive text-xl sm:text-2xl text-amber-200 font-bold tracking-wide drop-shadow">
+                Ngôi Sao Sáng Nhất ✨
+              </p>
+              <p class="text-[10px] sm:text-[11px] text-pink-200/80 font-light">
+                Luôn rực rỡ và tràn đầy niềm vui
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: ROMANTIC LETTER CARD WITH TYPEWRITER EFFECT -->
+      <div id="letter-container" class="w-full max-w-xl flex flex-col justify-center">
+        
+        <div class="bg-slate-900/85 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-rose-500/40 shadow-[0_15px_60px_rgba(255,77,109,0.35)] relative overflow-hidden">
+          
+          <!-- Ambient Corner Light -->
+          <div class="absolute -top-12 -right-12 w-32 h-32 bg-rose-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+          <!-- Envelope Header -->
+          <div class="flex items-center justify-between pb-4 border-b border-rose-500/20">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white shadow-[0_0_15px_rgba(255,77,109,0.5)]">
+                <i class="fa-solid fa-envelope-open-text text-lg"></i>
+              </div>
+              <div>
+                <span class="text-[11px] tracking-widest text-rose-300 font-bold uppercase block">Gửi Người Yêu Thương</span>
+                <h3 class="text-lg sm:text-xl font-serif font-bold text-white">Chúc Mừng Ngày 20/10</h3>
+              </div>
+            </div>
+            <div class="text-2xl text-rose-400 animate-pulse">
+              <i class="fa-solid fa-heart"></i>
+            </div>
+          </div>
+
+          <!-- Typewriter Letter Content -->
+          <div class="py-5 sm:py-6">
+            <!-- Highlight Main Wish (Requirement) -->
+            <div class="p-4 rounded-2xl bg-gradient-to-r from-rose-500/15 via-pink-500/10 to-amber-500/15 border border-rose-400/30 mb-4">
+              <p id="typewriter-highlight" class="text-lg sm:text-xl font-serif font-bold text-amber-200 leading-relaxed"></p>
+            </div>
+
+            <!-- Extended Sweet Letter Body -->
+            <p id="typewriter-body" class="text-sm sm:text-base text-rose-100/90 font-light leading-relaxed min-h-[90px]"></p>
+          </div>
+
+          <!-- Action Buttons Bar -->
+          <div class="pt-4 border-t border-rose-500/20 flex flex-wrap items-center justify-between gap-3">
+            
+            <!-- Send Hearts Button -->
+            <button id="btn-heart" class="flex-1 sm:flex-none flex items-center justify-center gap-2.5 px-6 py-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-medium text-sm shadow-[0_0_20px_rgba(255,77,109,0.5)] transform hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer">
+              <i class="fa-solid fa-heart text-amber-300 animate-ping" style="animation-duration: 1.5s"></i>
+              <span>Gửi Triệu Trái Tim</span>
+              <span id="heart-counter" class="px-2 py-0.5 rounded-full bg-black/25 text-xs text-amber-200 font-bold">9999+</span>
+            </button>
+
+            <!-- Replay Button -->
+            <button id="btn-replay" class="flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white font-medium text-sm border border-white/20 transition-all duration-300 cursor-pointer">
+              <i class="fa-solid fa-rotate-right"></i>
+              <span>Xem Lại</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EMBEDDED COLOR DATA FOR ZERO-CORS PARTICLE MORPHING -->
+  <script>
+    window.EMBEDDED_COLORS = {
+      streetview: "adbfd8acbbce96a7be8ca0b98da1bb8da1bb8d9fba8c9fba8fa2bc8fa2bc8ea1bb8ca1bb8ca0bb8b9fbc879bb9879cba8ca2c098b0d198afd097aece99b0ce9cb1cd9db2cd98b0cb97aecb97aecc96aeca94acc995acca95acc897adc899aec79eb0c69fb2c8a2b3c6a5b4c7a4b4c89fb2c89aafc897adc896acca96adcc96b0cf8099b8768eaa798eaa879bb79ab2d1839ab88ca8cbd9e3ef62616013141623262c1e21271f21281e21271f222816181f14171d14171e13171d13181d12181d20262c13161c20283288a2c58ca7cc8aa5ca8da6c98ea7c88ca7c889a5c786a4c786a3c785a1c685a2c783a1c785a1c48aa4c48ea6c590a6c68fa6c691a8c594a9c58fa7c48da6c48ca4c58da6c68da6c592abcb829ab94854614c5663565e6b4c5765677d9a444f5e6b829fe1e9f14d4c4a0c0d0d46484a393b3d4b4c4f47474b48494c1314171011141112151112150f10131112144a4c4e1e1e1f1d20249caec7a6b8d1a0b3cd98aecb92abca8da7c988a5c886a3c886a3c987a3c888a4c888a4c892aac894aac895abc892a9c790a9c790a9c88ca6c68ca6c58da7c68da7c68fa8c88ea7c890aacd879fbf545e6d525a65555f6a4857655f7b963d4d5d557694cddae7494b4e09090a191a1d2122242122241e1f2322232622232622232627282b2122250d0e101314161314170f1011222528aab7c9b2bfd1acbacea7b8cd9fb2cb99aec993aac890a8c88ba6c88ca7c88ea7c891a9c893aac891a8c891a8c88fa8c88fa9c78da8c78da7c892a9c993aac996acc997adc993abc88ba6c483a4c47295b46187a64f78a0537da77399bc5884ad437db1c3d1df363c430b0b0b6d68683233372a2b2d2526282a2b2d2a2b2d28292b2627292a2b2d2526281011131213160d0e0f212328a5b4c8aebdcfabbacca7b8cca2b4cc9cb0c999adc897acc996acc994abc993aac894aac991a9c991a9c992aaca94abcc94acca92abc892abc78ba6c382a0be789bbc6a93b8608db65788b44f82b14e83b35487b78eaac384a4be8da8bf5d8bb6447cb3cbd6e13b40460c0b0b71797636393c32323433343634343639383a3332342e2e2f37383a3536381314151213150d0e0f2123279fafc5a1b5cc9bb0c998adc995acc894abc792aac790a8c78ca6c78da7c894acca94acc992abc88fa8c589a5c280a0be7599bb6892b75c8ab35788b45183b24f84b44d82b54f83b45285b64a7fb3487eb14b80b15885b14e7fb05484b4628eb87fa1c2cfd7e13f42470c0d0f2425282e2f30292a2c1f2022222427262e31272e3129333623282b2021231b1c201113160f0f121f23298fa5c392abcb8da7c78ba6c78aa4c785a2c389a4c291a9c6a2b7cd99b1c6789bba7498b86b92b55f8ab35785b25283b14c80b25285b65285b55286b75285b65186b84f84b75185b54d82b6648fbc7297bc7a9dbd8ca8c3a3b7c98ca8c17da1beabbecccdd5df37393d0303041f20211b1c1d1414160606070b0d0f1520231724281726290f161906050808080c0a0b0e060508171a208da3c292abcb8ea6c78da6c789a3c5bdc9d4d4dadbdadddad7d8d17195b25383b05282b14b7fb15181b0608cb16792b4749cbc82a5bd6592b24f84b64f84b84e84b94d83b84f85b74e83b78facc4acbdc8acbdc9adbdc7a0b5c487a6be608eb76b95b9cad3dd5c60672d2f3333373b30343930343932363b31353a2f31372f31362f313630333931363c30353b31353c2c30373e434e99acc699adc995aac791a9c68ea7c8cecdc7decfb8e0dccfb3ac9c4e7faf5383b3608ab28aa2b7a3b0b088bad68abad664a2d25a86a6537fa25186b84e84ba4f85ba4981b94a81b7447cb57198be7e9fbd658fb75b87b55785b4638eb76490b8608eb6cdd2d9c4cad3c1c8d2bfc9d4bdc6d4bbc6d3b8c4d2b6c3d2b5c3d2b3c1d1b2c0d1b0bfd0afbecfafbecfadbcd0a9bacfa7b8ce9fb1c99badc696aac695aac58fa7c5c9cccdd4cbbbdad9d099a9b35b87b0a8b8c0cbd0c9d3d1c6bcd2d768aadb6aa5d46da4ce90b6cc789eb34a80b44e85bb4c84bb5689bd6391bd739abf759bbe789cbd7a9ebf769bbe84a3bf799dbc568ab6578ab7cfd2d7c4c7cdc2c6ccc0c6cdbfc6d0bec5cfbac4cdbac3cdb7c1ccb4bfcbb6c0cbb6c0ccb8c1cdb7c1ccb3bdccaebacaabb8c7abb8c7acb7c6a8b6c6a4b4c7a1b3cac8cecfb0bdc5b6c3cd9cafbb6c93b4b8c5c5c2cdcac6d0ccbccbc589adbb90b2c084a7ba87a8b86f9ab84a85bc4c86bd4783bc5f91bf6a96be6392bc5c8dbb5287ba4f85b95587ba83a3c16893bd6092c04483bdc9ced5c3c5ccc3c7ccbfc6ccc1c8cfc0c7cfc0c7cfc2c8cec0c7cec0c7cdbfc7cebcc4ccbbc3cbb7c0cbb5bfcbb5bfcab2bcc8b0bbc9adb9c6aab6c3a4b0bd8c98a0a4aaaaadafabc8c9c098a2a34b7cab5484b05284af5989b35886ae5784ab5485b34c82b64882b84983b94f87ba4d85ba4f87bc4b85ba4c85bc5088bf4f88c14c87c16e9ac380a4c57da0c17298ba6f96b55787b1c8cbd5bfc2ccc3c7cdc0c6cbc1c7cdc1c7cec0c6cebfc5ccbdc4ccbac3cbb9c2cbb5c0cab5c0cbb8c2cdb9c1cdb9c2cdb0bbc7a7b2bfa2acb9a0aab5aab3bc949aa0b7ab9eaa8f77577189a68368506a894a70984d749c4c77a14a77a2507ba65380ac5180ae5183b24f81b15081b35485b56390b76690b46a91b2698ba465849a68818f5d727d5d6d72575e5a53544b4a4c444f4d41caced5c1c5cbc4c8cec2c7ccc3c7cdc1c6cdbfc5cdbcc3cbb5bfc8b2bcc6aeb9c2adb8c3afb9c1b2b6b7b6b8b69ca09fc3c6c8d5d4d6e1e0e1e7e5e6e9e7e7e8e7e7c2beb76e7f923671b2647e9e3c6fac366dac3a6fac3e71ab3e71aa4477ab4879a848759d4972914c6f895372844c646f4c5e62475552434c44393d313132242a291c2623161e1a0e211e122b271b1a150c211b11d0d2d5c7c7ccc9c9cec5c7cbc5c7ccc1c6cbbfc5cbbfc5ccc8cdd0d1d4d6dbdcddebebecdcdbd7b3b1a4b9b7ab8f918ae0e0e1fffffff8f6f8f8f6f8f5f4f6fffcf89fb7ca5889b17c9fb05e89a7557d9d58778f566f7e4f62674753534148423a3e3338392a2c2a1a2320101a17082826181c190d0d0a030c0a0711110f30332e1314131b1d1e2224243336354c504c3f4340464a46cdd0d4c3c6cac6c8cdccd0d5cbcfd5cdcfd3c2c6cbcaced2fffcfdfffffffffcfef9f7f8d8d7d5aeaea2bcbaae9c9f97dbdcdcdcdad9cdccc9bfbfb7b0b1a8a2a49a64695f4041353434263130212827181b170a14120725251b14140d11110e121312363d3b262b2d2930342c33364950514b5354464d4f505758545a5b5f66645357545155544a4e4a5c625f5156503f443c3e433acacfd2c3c6cac7cbd29e9b9ba6a6a7adb3bcb9c0c8d3d7dbf3f2f0dededbcacac6d2d1d0d8d7d4b7b6a9bbb9aca7aaa1acafac73786f7d847c878f88949d999da7a562655e2d302f262a2d3a4145414b4c353b3e3d444851595a4b52544c53564a5151474e4b474f4f454f4e3a45412e36322c3a352a3c352439311f372f17342b16382e173b33113c313d584f332e27090b021a1b11c8cdd0c6ccd1878586463e36786b5e4346495b5f646c6e6f808279868981898e85b1b5b0c7c9c4c8c7b9c5c3b6aeb0a5afb3b089918caeb4b3d8dbddc1c6c5a0a9a59a988b4a514d3e48463543412e3f3c2c3e3b283a3829403b27433c22433b234a4124514625584c275e522d6a5c3677683a7d6d3c82723f89784792804997854e9c8855a28e4da08a80ac9655483a060805181913d3d8dbaaa8a93c332d615a518273626e63573e4145363b4247494b4d4c4b4a4a49515457696e70808583929792989b95b9bdba9ea5a1d8dad8ffffffc6c9c5939c958c8f86577a7071988d689488629e8b70ae9b75b6a177bea77ac5ab7dc9ae7fcfb280d0b283d3b57fcfb283d3b485d4b483d1b283d0b282ceb084d0b186d2b287d4b28ad6b488dab4a5d5b7554a3f040404131310c7cacc59524c453f3674685b807261887968615a54383e463e434a4246495f554b7b68556f615356504a4e4b45494947545454606464797978adacacaeb5b3a3aaa2959f9499cfbbade6ce98dbc08bd6b987d3b482ceaf85cfb182ccae81ccac80ccac7dc9a97fcaab7fcaab7cc8a97fcbab7fcbaa7dcaaa80ccad7ecbab7dcaaa7eccaa7ecba973cba596c7aa5f5e4d182a1f22251e7e777027231f6b665b776d607d74668273627e7062695f55655e55635e5859544c7769587f6c598473608f7c687d6b58836f5b6a5d51645647584d404b4944595f577e8d808fc6af86c8ac7bc6a779c5a879c4a77cc6ab7cc7aa7bc6a97dc8aa7dc8a97bc6a87bc8a87ac8a977c4a678c7a87cc8a97ac7a87bc7a87bc8a87ac8a87ac7a779c9a774cda79ac8aa5c66521a422e2b413158514c574940907d6e856b5f957c6c7a6b59786b5a9a8a758c7a659786729183718a7c6c897b688376658f8272897a688a7a66968673907e6b917c648d7e6949503f576b618dcbaf8bc7ad7cc5a673c2a476c5a777c5a776c3a678c5a57ac7a878c6a673c4a471c4a270c5a270c5a36fc4a170c4a174c6a477c8a677c7a676c6a577c8a779c9a872cda894c7aa5c665316452f264833de9585df9080e68f7fe59786ed8f7b8e6e606d685890816e786b5b6057486c6253665d4c675e4d6d64516b6452685f4e635b49645e4c625b494a55504b544b474c41485c5684c4a885c6a972c2a06dc1a26ec2a26ec1a271c2a376c4a678c6a876c6a672c4a46fc3a26ec3a26fc5a46fc6a36ec4a272c4a276c6a577c7a673c6a671c7a471c6a36cc9a490c6a85e675315462f254a34eea295e2a596e99683d6aba0ec9f919362545e5a4f6f5d4b676051585546504d404d4b3f49473a4b483a49473946453844423648463844423d3f665f4c675d616a64455c566bb49686c8ab74c3a369c0a16dc0a270c1a274c3a679c6a979c7a977c5a774c4a46fc3a36dc3a26ec4a36fc5a471c6a573c6a573c5a472c5a470c5a471c6a46fc7a46ccaa48fc3a55c6651134731254b36edf1f3f2bba1f5ae8ef59c8aff917bac7a6c58564e7b7367aba89c8d8b81706e6674746c7f7c75858279817e767878726b6b655557514d4f51476d625777705e6a67475c5669b49486c8ab74c1a268bf9f69c0a06bc1a26ec2a372c4a472c4a570c4a36dc3a26bc2a06ac2a069c2a06bc3a06cc4a16cc4a16cc4a16ac3a06ac3a06bc4a16cc5a168c8a28cc3a65b6752114933224d37faffff9a938d70645d766d667d675c6f655c6a6a6365635996968c96948a8a89818e8b826e675c4e493f3f3b335653497775699a968a80807e43635f627a75606f6c3d5350509c7f83c9a972c1a068c19e67c19f68c1a069c2a06bc3a16ec3a26cc3a16ac3a069c39f69c29f68c29f68c29e6ac29e6ac29f68c29e67c19d67c29f69c49f6ac49f66c7a28cc3a55d6853114a34224f38b8bbba3c393318130c211b141b1913211d15241f1516120b848278aba99e777268575143433e2f242018211f1757584b656657686554948e80486c7c526f786b77723a504c39886e86c9ab79c2a366c09e68c1a069c2a06ac3a06cc4a26ec4a26dc4a16cc3a16bc4a06bc4a16cc4a16cc5a16dc5a26fc6a36ec5a26dc5a16cc5a26cc6a26dc7a26acaa48ec5a75f6a55134c3524513b4c49402f2a1f38322a322a232a251e241f191a1611201f19c5c3b6aba49560543c6d69575753452e292029251d7d7c7195948a87827573716437617656727c6e766646594e297a627cbea27bc6a565bf9c65be9c66bf9c68c19e6ac3a06bc3a06bc4a06bc39f6ac29e6ac29e67c29c67c39e67c29d68c29d68c29d69c39e69c39e6cc5a06ec6a26bcaa48dc4a6606b55134d3625523c5e5e5538342a38342b332e262c27212a221c1c1914171612adab9d837a6a524a3a7573635c57482c271f29251c8381789e9c93a29d9392958e4057617371656e6f58394b413482687bc3a379c4a468c29f67c19f67c09d68c09e69c19e6ac29f6bc49f6cc4a06ac39f69c29d68c29d67c29d69c39e69c49f69c49f69c49f68c39e69c39e6cc4a068c8a18bc3a4606b56144e3825533f5c5d5639362d39362f312f2a2a282326221f1f1a160d0e0d80857f5558543c3c346d6d625c584c2e2a242e2b2285857ca19f999f9c96929891938b7c867f703747413a4f482a765d79bc9f7cc6a569c19d6bc3a16bc2a06ac29f6bc39f6cc49f6cc39f6bc29e69c19c6ac29d6bc39e6cc5a06dc6a16dc6a16cc5a06bc5a06cc5a06cc6a170c7a06ecba48fc5a7616c5717503a2856405d5e5638372f3a393132312b2a29252e2e21201e161d1e157a7f59696d4b4d4d3d727166535044302c242524208281799b9a949a969090958c9ca79da1a49748544a394d4629755d72ba9c7dc9a767c19d67c19e69c3a06ac4a06bc39f6cc59f6dc59f6bc29e69c29b69c29c6bc29c69c19c68c19b69c19c6cc39d6bc49c6bc39d6bc49f6fc59f6ec9a28dc2a5606b5618533b2758415b5c5636352e303234292c31282624393f25434c285a6134707d443f44304948407b756448423632302824242289877eb3b0a8a7a0969e9f96aaaea7bcb49e5e61503b4d452d79617ebea384caa96dc5a16bc3a06bc39f6bc4a06cc5a06dc5a16ec6a16dc49f6bc49e6cc69f6dc69f6bc39d6ac49e6bc49d6cc39d6bc29c69c29b69c39b68c29967c59a85bd9f5e685419543c285a43615d5433322821232c181f392020262c2e2644542f63642f7a7b49474a4446443b6e6b5c55514425221e27251f8d8b7fbdb9b4b5b1a9aeada4aeb1a994998d404d443c4d442f7a617fbea280c9a66ec49f6fc5a06dc49f6fc5a06cc49f6cc49e6ec59f6dc49d6ec59f6ec69f6cc59f6fc6a06fc6a06fc6a06ec7a06ec7a06ec8a06fc8a072c8a06fcba190c9a86f7c6919543c295d46635e522a231c1519250f14270d0e123c442354642b5053248a80555e594d3c372f5d5d5159574b2927232f2f2a85857da09e9aa3a09c999e96a2aaa29fa0934b554942564f3b836977be9c7acaa36cc49e6ec59e6dc49e6ec49e6fc59e6dc49c6dc49d6bc29b6dc49c6dc49d6ec59d6fc69d6ec59c6fc59d6ec59d6ec59d70c69e6fc79f71c79f6fca9f8fc4a36a776219573f295e468c83715d5140504b3f70654f8b7e6476744b4f532c40462049523533393741434068685f57564d393a36332f2d8b8581a5a09daaa6a2a5ada7acb4b3beb5a25e614e43554c599d8071bd997ac9a270c59e70c49d71c59e6fc59e70c69e6fc49e70c59e6ec49c6ec59d6cc39b6ec49c6ec59c6fc69d70c79d6fc69d71c79e71c69d71c79e73c79f71c99f8bc0a0636e5a1f5b422d6048c9bca4c4b092d7c09d9993915c5e6bccb595ac9b7a7d744d4f4e364542394a494260615a413f3b1d1d1c1d1212837b76a39c9aa6a29eaeb4af95a486858c7045504940534771b19388cca87cc9a275c7a076c7a076c7a175c7a076c79f74c6a073c79f72c69d72c79e72c69d71c69d70c59c6fc49c6fc59c71c79e72c79e72c89f73caa077caa076cfa58dc3a267715c235f4533644acfc2acc0af94d0bb996f7c9d203359ccb693dec5a4bcb7a47e7c6d47433b312f2a46443d35322f322e29494037a09a8db9b5abb7afa4b2b4af8893585a64334c564f4a5c4b77b8969cd3b282caa479c9a379caa379caa379caa37acaa279c9a277caa277c9a176c8a075c99f75c89f76c9a073c79e74c79e72c69d72c69d72c79d73c89f77c9a077cfa48cc2a26e75602e654a37654dd6c9b3cdbda1dac7a886889124304998866c96846bedebe6b3b3a935352f4d4740918271a28d7aaf9883c5a991c5ae98b4a593a69a8a9f968d9692665a5a325658473f51426fb59192d0ac80c8a179c69d7ac79e7bc69e7cc89f7cc9a17cc9a17bcaa379caa379caa278caa278cba278caa278caa177caa277caa276c9a077c9a177c9a079caa176cda28bc0a0787b64406d5238684ec9baa5c6b095d0bc9fc7b195a1917aa49275ab9778c3b299a0947e918465a59679c3b095c6af98c6ac96c9af9bceb4a0cdb39eccb4a0c4ab97a2906446462c25302d3e4d4494c3a3a9d5b288c9a178c29876c49975c59b75c69a76c59b76c69c77c79d78c89e7ac89f7ac79f79c89f7ac9a07acaa17acaa279caa279caa27acba27ccca37ecda37cd1a591c4a3777b64406f53376a4fc0b3a1b19f87b29e84bba487c6ad8cbfa887af9a7ca59170ad9979b8a587beaa8bb6a486b8a78bbaa88bbbaa8bbcab8eb4a487b8a58cb19d848f7955625544817e6caba186c6b99ecbc1a6c5c0a3b4b699b4bf9fb2c39ea5c19a9ac79f8ec9a286cba57bc59d76c69d76c89e72c79c73c69b76c89f77c89e77c99f79c9a07bcaa17dcca280cba07fd0a492c4a281836b3d715431644dbfb6a5b2a591b2a791b7aa93b9aa94bead95beab8fbfab8ec0ac8fbea98db5a083b29e7fb7a284baa586b7a485beab8bb9a686a49475ae9c7dc9b698c0b091ccbb99beae8db1a484b8aa89bfaf8fcab899d2c1a4d1bc9fd9c1a4d7c09fd9ceb7d1d6c6b7c4afc8dcc9b0c9ae9dbf9fa9dabe8cc8a583c7a183cca47bcaa077c89e79cda180c1997fcfa297cba880836c2f5f4a35554997968f908a7da8a18eb0a793afa693b6a996bdb09bbeb29cc2b49ec8b9a1cbbaa2cbb9a0c6b49ac1ae92beab8fb9a68ab5a081a59375b5a587b2a182a1926fa29571bbab8bbaac8dbdaf8fc9ba9acebf9fccbd9cc8b999c2b494d0c6afd7cebed5ccbed3cbbfd6cdc2ccc0b4cfc4b9e4dcd5cecfc1d6d8c7d5dbc7acc1a7b8d2bab3d6bd96c6a393cba5a3c9a86b695a303836585e59747a787271669c947fa69c87a49c88a69d87a69d86a89f8bada28caba28bb5aa93baae99c0b29dc6b8a1c9baa2c7b89fc6b69bcab99ec4b399c1b096b9a98cb6a587b0a182b3a78aaa9e7ea89c7bb2a485bbae90c2b393c2b392d0c7b4d7d0c5d9d1c4c6bfb1a9a496b0ab9dc7c1b3ccc4b6d5cdbfdbd4c7e0d4c0cfc5acdbcfbbded3c0c7c3add8d4c4eae5d78884774a2f3374706cb3ad9cb3ab9dc2bcafbbb7a9b8b4a9b9bab5bcbeb8b5b2aca4a6a4bfbbb3aba79baba28dada691b0a893b3aa95b6ac96bdb19bc1b59dc4b69ec4b69dc3b59dc2b49bc3b49dc4b49bc0b195bbac90b4a589b7a98db6a98db9ac8fad9f80b7ac95c4bba8cec7b6cfc8b9c8c1b4cac4b8d4cec2d1cabed6cdbcd4c6accbbb99c3b594c9ba9accbda0d2c3a7dbccb1cdc1a9695f54bcb29fa49f90cbc3b9fff9f1f8ede3f7f6f3efc4b7efb4a6fdffffc0cbd9e6eaf1cfccc7a19a86aba391a9a28fa9a28faca590ada590ada791b3aa96b5ad99b6ae99b8b09bbbb29bbeb49cc4b79cc7b99fcebfa4c4b59bc2b399c2b298c1b196baab8eb8a98cb4a88bbcb096b7ab91ada286a09776aa9f80b5a789b6a989bdb090c0b294c8b89bc1b294cfbea1dac8abcbba9f5c564eb7a88fa4a192bcb0aae5d7d1d9d1c4dfdcd9d7a484d89a7becf2fbdcdce1bfc9d6bfbec1a19985aba391a9a28fa9a28faaa38faba490aaa390a8a28fa9a390aca592aea792b3ac969d9884a79f8ab9af9888816fb8ae96c3b99fc1b69dc4b79cc6b79ec6b79dc6b69ac1b194bcac90b7a788aa9c7ba99b7cb0a1859f926e9b8e6ab7a98cb8a88abead8ec2b396d4c5aabaac94141415a1947fa69d91bcc4b8d8fdeacdf2e0d8fce7dfdfded7d6dbd7dbebe1e2ecd3d9ec979dada29984a69f8da8a08da8a18ea9a18ea9a28faaa28fa9a38fa9a38fa9a290a9a390a9a4907c796b8a86778e89783f3d388c8574bdb49cb9b098bbb29ac0b69dc4b99fc4b79dc2b49ac2b39ac1b299c2b39ac4b39ac4b399c3b297beae93bcae93b6a98db8aa8ebfb196c4b499aa9e860b0c0d988c78a49d91bec5b9defbeadaf3e5e7ececf2f2f4f5f4f6f3f2f2f4f2f2f6f6f8a7adaf9e9782a49d8aa39c89a49c89a59d8aa49e8ba59e8ba69e8ba7a08da7a08da8a28faba692938e7c9a9481a49e8a706b5d9f9886aba690aaa38ca7a08aa29a83b3ab94beb49dbeb49bc4b79fc6b8a0c1b49cbeb298bdb097c0b298c3b399c4b399c5b59bc5b59cc3b49ac9b99fc2b29a7e7465bbab94a09c90abb5b6dfefe8e8f0ebedeaefefeef0f1eff0ecebeee9e9ecf4f4f7c7c5c09a947fa49d8aa29b88a29b88a29c89a29c88a29c88a39d8aa39c89a29c89a59f8ba49f8c9a978ea09d949a988d9d9a91a5a091aea692ada692ada691ada791ada691afa991b2ab94b3ab95b7af98beb49cc2b69fc7baa3c9bba1c9bba0cdbea2ccbea2c9baa0c9b99fc9b99fcbbaa1d5c4a8cbbba09d96898d8f86989b8f9e99919f9b91a19c92a19b92a09b90a19c92a39f949e988a9f9884a29a87a29a87a29a88a39b88a39c89a39d8aa49d8ba39c8aa49d8aa39d8aa49f8b9f9a899e9a8ca09a8a9c9687a59e8ca8a08e9c96879994839a95849d98879b9785989381a09b8b9d98889690809791819a93829d96849e97849b9380a097839e97849f9684a59b88a89c8aa79c8aa69c88",
+      girlfriend: "7875701b171dc6c2b34947474a4748c0bdaf07081495928b807c76140f15c9c4b4fcfefff0f4f9f5fbfcecf0f6f3f6f9fafdffdfdfe1584f4829273221212e090b1e090e202b2d3555648261739a56628147404b4d485375717ac7c5d4e0e0eceef0fafafdff868794232a3bccd5dc9eaab63f434a00000006060a0000005e584a554c4b1a1120241d280c0a0ca4957f483c28574a3675756f141217c4c1b34d48475a5350bcbaad0b0a1398968c7d7a751a1519d1d0c7fdfffff0f5fbf9fffffefffffbfeffd3d1e0c5c1d2564f4c25222c211d2b05091b0e13223634374c5e7e5c759c4755734c4551544c578f8c96c4c3d3e1e1edf1f5fdf9fbff6d6f7d30384bc9d8e78390a1393b400000000303070d0c08403625312a231f1a23211c241411117060484f40275f513a807e75131113c3c0b54441414c4848bebbb005030c9a998e75736e130f15d4d4d2f1f5fbe4e7f2e1e3e6a0a2a74a4b542a2c3a25263135313021222a181523080b1c121727332d2e455674607aa2455373534b59655c67a49faeb7b5c5e2e2ecf2f3fff5f5ff4c4e5b3c4860a0b7d66a7a922b2b3200000015110c201a0e3b311f4e40292924261b1820100d0b4032203d301c463c28908e7e2e291dc4c1b44b464657534ec0beb20a070ea4a29779736c312a2ac5c1bab6b2bfdadae67f797718100f59555300051300031223202418171d0e0f1c070c211b1e2d322a243c49636782ad414f6c67616e7a727faba7b7b8b5c1e5e5efccccdcafa9b2312f364c5e788da6c6707e93242022010101332a1e4f432e5d4f365d5233211f1d100f18100f0b72613f927d4f6c604086857a363126c6c1b44c45405d564dbcbaad130c11ada699766e68413734c4bdab40322c9d9387938b7e3d2d28cbc0af2a282c2a282d403a3643302833313d18254530333e4c3c2f3e3b3f2f3342221c238b858a80757d7a6d734b4a54454754393b4b27262539414f8da6cb8aa6c66972821f191b0c0c0e464138483f353d2b1f451308682216180c0d51160bac705059575928253175756e211d17bcb6a84036354b443fb0aca2070106a8a0936a645d372f2cbfb6a836252392877c8b81763d2d29c3b9a84f3d346f5e5063594d473028534a49433e455449424d40343e2d2257453551392a5b483a58433245352f141829131a2e27293927231f686f7a92abcd78869a51535c1714160c080d1a1616231f1d180c0f22070a3c121037130f3f1610261f2f091346050a35aaa7936f6b57d1cbb26760536c6658bcb7a21b1917b2ab96706a5b3d3730c3bba62a1e189b92827b73682a211ebdb4a1392e2864594f5a4d4147352b7e6d5b4932246455474e4135513c2f5f5042503b2e5d4c3c3930252121233535372425274741334a3e2d433b2f3e382d362c1d2a251b09060608040b0c070d0f0b0e0e0b0e0b0a0e07070c0604070a0d0e2a2b29262220211e20a6acc3aeb2c9acafc2a8abbeb1b1bcbdbbbbbab7b0c0bdb9b2afacb0aca3c6c2b2a19d92c4bfadb5af9ba19883cfc4a97e725d8c80678373597a685293826a6e5c478c7d657f6b53766049857459634e35806d5248372b27221a514b36463f2f45372a4032283f322733271c342b1f483e2f1f1816130e12161112130f10110d0f130e10110d0d14100c1411102a28262320201f1c1c7f8fde909ce28b99e98d9ce78e9de37888dc7e90e56d81de687ddc8093e06c81da5c76de657dd96a7fd96f82d67080ce687acb5564a93f49763d41614748624a4a614d4c5e565565595766615e69635f676a64696c6262655d57756a62493d3f261c292a22302b222e3f34333226282f24263225263225253124233126252e2321241a181e15132219181e1416261c1b2d221f251a1b7284d86374d26574d67e8bdda7b2e9a9b4e88c9eee7388e86e85e67087e75d77e95b76e65e78e6506ce14764dc4c66db3f5cd83b57d63f5cd14058bb384db320399e152b850e1f6c07145607125007134f0712490913491019520c174f0611450d18541526742b315a191a33060c340c11350d10321013351415341514301a172e1e1a2b1915271b18281d17271b1323271d223329298999e47b8ae26777da5266cd4e61c75e6fcc6379d9627ad9677fdf748ce76b84e75a75e2546ee0556ee0526cdd546cde4e68dc4d66da677be15e75df415ccf3e5ad13053c72848b31e3b961e358e253d97263e99223c991c3388151f590b174d13216d2238991723600913490f1b5d0715520b16530f1a530f174a1116461116460f16490b154b04104606124a0815540d1441090a23576bd57788e4707fde6e7ddb5f73d75c71db5269d93d5ace3a59d24463d9526ddf4a66db4160d44460d53e5acf3954ca3653ca3452c72c4bbf3e5acb2949ba2847b92d4cba284bbe3a5dd25473e2536ee13154cb2950c72442a816215e131a4d1622672840aa182b79182263152062131d55171d531921581c276a172569152269142167141f5a0c19520f1b58101e5c0b144904083d384fc05161c6606fcd4f63cd5869c45d6bbb4c63ce4460d24766d94362d7425ed23c59cf3a58cf3956cc415bd03c59cd3955cb3452c8435ed04563d03454c43757c8405ed6395cdb5b79ec607bdf2d4cba2345b82343b32545b320368a192a731e34882740a9223b9c17266e131a57141b55131c5415206621369a20379b233ba121389a19276b111b55131f5d101c550812450f164d3e52ba3245b14153bd3d54c8505d994543355c65885a74e23e61d35776de5572dd4462d64563d44260d23b5ace3c59ce3b58cc3b59cd3a59ca3253c32f50c13959cf3b57c240529d424a72454c6b353c5b222e64233c962a4bbc2e49af304bb22e49b02640a72444ab213c9d182d82182c7d14246e17267422369322358f273d9c23368a1f2e781723631823600f194d0613470f184f697bd1596ac25767c85668c75767c15867ac445ebc4b69db395ed14465d45774dc4c6ad95578e2365ad63657ce3958ca3655c83555ca2f50c13c5bc92c4bb73a488152474e8d74639e7f69b1866b85634e31211a0f0a0f1f2b632b47ad2544ab2040aa213da42342ab2040a62341ac203ca6203ba02138982b43a721368d1d2f7821317a273991192c7f1d30860f20661c2b741c29782d44b72d41b05263bf5868bf656da04156a62c52c94060cc2b4db3365bce345ad13e60cd374b864356913856bb244cc8244cc13054c83e5dcc3857c2252d5b37261bd4b094ffebd0ffccafe7aa8eb1795f764c3c3724210500002834782e49c41f3ba11d3a9e2543ac2d4ab22743a920389c21389e223ba52642af1c2d7a19286b1c3087283c9434458b3d4f9f1d2e78303d9221337c5266b35560857c81948e94b1666c7d2f3438222f512d417b1a398b3258cd365ed63057c7394b7378787b666b7b1d37843756c43a5ad22b4fc42b4aad090920997f6edbbba78d6856b278619d6b57704c3f6b4637754e3c25170f080c2e3f4ad13741ba2a3aae2538a52941ad192f911e36991e379a1d39a21c35941925601226764d5b90acaaa8b2ae9e9a947daca79b928d8d9b908373797268686173726d8f8b827776760b122a2338812d4ebb2851c34668d53d61d22753c81d50d33453a8232635171619353c5537477936447130395a3a3842e7ccb0dbb9a4957163d6ac989f6c598a6354835646915f465f3f302413183740a84954d83e46c32b37b73a47b32e3ba413208e1526962a3eb22132961a287c0c2383636e9aa4a3b66769917a799e948f88b2a893a298870e111502030b00000400000a0000012934557d92bfa4bbd85d7cca4268d23459c53358ce395ab93e45530b0c1423273634374235353c43444e4a50603a3b45e6bca8d69b88c98e7bc79381935847bc7d6ab471609a5e4a7d503d2e181620318e3445d44a5ce19679b3a18b86555fa42b34af323cb73844c94050db3644be090d47343eae3643d03440cf2c34ca2e33a08480838a7d5e4f5b5559695c768479383d3b2021252a2b27363a317e907c2633451638a03259ca2852ca4053851b1917283975343f671b1c231416291e2134232636121625937267c3876da26c58a9675986493c824a38a868518b5747281a1d0f0c1f72588d6c5aaa243acd8064a99566842536bb1b289e222a9e2b34b03643c6343db9171c7f212bb22731c13e47cb363cc1424ad44349b359506c7e84807a7e75797a7039383036362e34373123252b1c1e261b1a1e202642385bc22d57c6334161080707354ca3203c8d181a261417283034461e1f2c070913020612a48572deaf91c1856ea568518e594189583f392b2c0000101819273c42938b6da7996b84644b95ae6c66b6959e7561902f34a0202aa71e29ab2b35b53640ba4a53c32932b54e57c94851c1474ec4454dd3393dcb4b4f4c625f5b524741372c2c3e2f2d443531332f2f43443f3e423e1a1c1e2e438636529c00020c000000273777334b9e21283e0b0e17424553323c4f303c5b5d5b62e3ba8fd3a07aa36f588b563c794b31643f2923181811121f4c4a504d557e3c4575634a4cb77163cb8677c48973b172507d5c733643cc3541b6838dc696a2d2828dd1484fbb393bb12e2eaf1a1ca72327af2a31b3908380846b6c7b5e605a43463917213e18214938383c2b29352a2828272f5b5d5ecad6d3818c8e8f9c9bc3d3d7707b8e353e5438446646567a7b82ad5662908e7062fbcfa2dbaa7cd69661aa6b448e5234ab6e438b5c34201519110f1c1310160c090b110d1b553e43be846d965e4c8f584b9b5f4c5b5aa44c5dcd4047b4353aaf262cae2f35b9303ac3353fca3a44ba242d92303aaa6d61575d56524d4745332f2c2e29252f2b251f1c1e0c0a1008070b03020822282ac4d9d9e5fbf7c9dfe3657a9c252e47242e44787d3e999f3d805c25ab482fa29252ffb78be86847c1540bdda453ad834ddd822dff9b23603525060c1e1a1c2f10131f00000700010e281d215a3b318d5b449961497e554a433a67273385293a923544a03947c03e4ac83140c41d2471050655363dbf1d1d1d464747939796b2b5aab2b1a160605715161c04070c020407000000000000859392a9bdc54f628849587d171a25010922b8af4ffef5979fab88928d5891683bc64748b7241ebb4942b46b48cf7244bc453ce785224b342d050a1e1214200a0a13060610080712090a1a030514422e2ba36f5aa76d548f593b7454504543851325a7303fbd404cc43b4bcd0507351a1d71404bd405050a4b4b4c5f615f3f383c362429150109000000000003000000050505040403252b3960749b6479a62c3349000000464d52e9ecb7eef2aef5f3b4cfd197958e5d8a41458615269d54589f474fbd4c40d87e5ddfbc7dcfc98a71634304030a0909130707110b0b170f0e1c11132000020d2f211f9968539c634f8753398c583a775c774857c54657d23a47ba0000163b42a839419029292e525156908d8d5d44494b2a305136384c403f5e5c575a57550404041d1d1d38425b4656793b47640a0d1900000c96864dfff998eeefa9eae796edde7ef79d6ad55649ab5b36b081438b42287a211bbaa352bead56b8974593733813111b0e0c1a0c0b1608081307081405061009081200000d3e2a269360498d594481503ba66a3986697b4358e4242f8f03031b3c43aa21256a1613135f5f5fe6e6e0b7bab5cccfcab6b5ad959088a09990bdb8b212121111110f1e202738476a1a20320f12200d0d1cbcab66fcf19bebe397e6cc74e0ba5fc5833cdba34ccc9038a67029be95479132248e412eb99f4fb590408d733e00000e00000605061208091301030e03040e02020d07081501020f54372885543a7b4a3479472f7b4b314f4f9f1e234d1b19232323332e2f40382e28343334ddded8c8cac3c8c7c0cbcbc4bebdb6b0aea8c1beb63633300000001a130f94837cc2c6cdcbccd3cecec5f1edabf0e899efe593e5c767d9c973ceb866caa955c6a651c3a455c6ad59be9049a36931baa04db1913c947e459494927a7c7e14172100010d16171c03030901020b07070f050508442b215f392c5f3828643c2b5635262d20151a181618151516141419171959524c3834309b98948a88845653534844443d3a392e2c2d232222100d0d0806083a2925f9ebe6f0f6fff0f5f7fbfff9f6f9d9eaeb72dcdf26cbcb27d8cd60d9d454d1c32fcfb745d8b836c7981cc19a24b59b26aa911d9d8b296c670baba232bdb396817a7b2f2e303e3d3a2422220f0c0d100c0e0e0b0d0001040c0915211b1d1812130b0a0e080c2a0001150000120000050c0c11a7a7a5b7b3ad5449432a252366686c5b5b5e54545474726c2e2c280d0b0b0a070688898df7f6ffe4e5ede8ebf1e7e6ebeef9ffe1ebaab4c344c8d09cdbe49dd4e054bdbb3fcbbf7deed55ef3ba04e6a900b88e11a09320a49447a2956cc1a460876e588673628c776a68605a423f3a1613121d17142b24200a060613100e0605070000011f244527307102020e15131e3f3a41534f53c3ada4a6928852443e241e1c7d7d7cd2d2ccbab7ad85837c23201f0f090d4d4c4debe0e7dfb9c8daabbbe2bdcadebcc8e4c7d0e3cadcdcbed4e8cfe0e4c2cdd3aeabb98d8cbf9ea5d7bdc7e0b99dd8a077c38f7cc48374d5a38cd99e8ddba7a1da9d97e0aa9cd2aea1d3afb0a09d9e413f3c3d38333d3a354645433536360c0e0d090813182268161b3c2321204943427e74764b484acfbbafcab7aaa8988f47403c221e1b2c2825161012010000010000171215c2c0c3c7bfc1b4aaaeb5a8aeb3a4aab5acb0b19da1b19fa2b1a1a3b4a5a6b5a3a7b7a5acbaa7adbcaaaebca9acc0adb8c5a6b4ceb8becbacb2cbb7b9c9b3b6cfc7c9d1c0c6cfb5bdd4d1d1cec9c9e3dfe1bfbcb9695f567f6b4fa78973b08d7d6c51420c0a0c0b103d0a091a4442402e2c2c2021230d0c0fb6a396c6b1a678685f2c28242522221a19190c090c171215010000181616a49998a59699a49597a39597a19495a09491a09891a0968fa1948fa0928d9f928c9f928b9f928ca2928ba4948ca7948ba7978ca6948ba8998da89688a7968aa79388a89689a99a8eab968aad998da99589b19e92a18e8183725c806b54896e5d675245110c140102220000042422214644410e0a0b000000cdb3aad2b4abc9aaa0ab93899f877f87726a574a45090608181212564848a99c9daa9c9daa9d9dac9ca0aa9b9ba89b95a79993a79893a79892a79591a69490a5938fa4938ea5938ea7928baa918aaa908bab918aa99086a99084a98f83a99081a88e81a78d80a88f7fa78e7ea68d7dab94828d756757423194634ebb806b9461522c1f1d16181b2e2a281d1b193c36355d5e5e030909d5bbb1d4b7add3b8aedabeb4ceb2a6d8b9adceb4a8665b529d7b79b99693b0a3a5b1a4a7b1a5a8b0a4a8b1a4a6b1a3a4b1a2a4afa29fafa09cb09e9aae9c98ad9c98ac9b96ac9a96af9894b09791af9691af978ead978cad978cae9689ad9486ac9385ac9385ac9284aa9282a5917fb29a8a755f551100003c0b0c5816163f05065013136f26247e2c2c71181c97232dcb5a659e4e53d4bab2d0b2a9ceaea5caaba3c6a89ecfb2a8c5aba0c8a8a2c79895bf9c9bb5a7aeb6a8afb7aab1b7aab2b6aaaeb6aaadb6aaabb5a9a8b3a7a4b3a39eb1a09cad9f9aaf9d99af9b97b09895b19993b19991b29a91b19a8eb09a8db2998bb1988bb29689b19587b09586ae9485ab9182b89c8c5f4e460502020b0a0a661116880a0e56000053030643000086413de4b9a4de978cec9a8ec7a9a1d0aea8d5b1abd2afa8cdaca5caaca4c2a19db98d8bc59393c9a0a4b6a9afb7a9b1b7aab1b6aab1b5a9aeb5a9aab6aaaab8abacbaacabb9acabbaa9a5bba7a6bca5a5bba4a1bca2a2bda29dbea39abea396bea295bda194bc9e90b89a8cb49889b19487ae9384ac9283aa9081b89c8d58423b0b000024131148201e6a2824661012870e16862427e3c3ace4bda5efc5abf7b49dcfb1a9d7b8b3c6a7a1d0b2a9d0b2acc4a7a4bc9291cd999ad99a9dd6a2a5b5a2abb49faab7a4aebcaab4c1adb9c1aeb7baaab0ae9ea39f90938e7f837e6f707365646a5d5d6256566053526052516455536d5c5577645d866e6695796fa18378ad8b80b69186ba9386b69384b29181b3948541221f2000002c06032e08043807085b080aa10b13da4346eeb49fd9bbabedd0adf2d8b0e0c4bcceb0a8d3b6afdcbfb9d4b5afba9190c59393d1989ce39fa3dda5a8bca7b2c1abb6b7a3ad9c8b927b6c6f564c4d3a3232241e1c17110e120c080f09040300000200000705020302010000000705030705060906070b09090a0a0b1b18192d26244237345a4944735c5492756a9f817242261b340d0a340a063408073208072a01032d0000822f2be4b09deedebaf1d7a7f3d8a4be9c95caa7a1d7b3aed0ada8c19a98cf9d9fcb999bdda4a6f0b2b1d8a9aa8d80855d5155322829130c0a0100000000000000000402000706030b08060c0a081f180f19130b0300000f06001d17140c0a0a0c06030902000b0603342a2119130f02000001000208080a1415161f1d1d322c2b34302b352a213c2117350e09340604441b16694c37927753c8b48af5e4b9f3dda8f1dba6c29893c89c97c39995c09995cc9d99d3a1a0d29da0cda0a28b7173372f300d070800000003020314100d2c251a342b202b211a21140b241306261307704b1eecc472cc924d8e5e2bad8350cda77b9c7d55905b22996543a7815eb494709f8d7d7965545644352319120d08080e0e0f0f0e0f1b191c3a3a3e4e4e4e4b46464a3932795e3ca38050a57f50a57f4fc4a373e6cb9deed8aaba8c89b78a88a38581b5928fcc9e9bd0a3a0997e7e312d2f000000010000000001594021936831a06f3cae733cb1743bd59653e4a75be5a354df9f59e5a863e0a05ce9b170f4c388e1a564e8ae69d19c55a26b30ab7852baa1869c7f5dbe9e6fcfb186b89c77a184607755275f431b413525474039372f2c2623244745475d5e6151514e584b3c7d62409c7a4dab8552cba56fe7ce9dbe938daa87839b807cb38c8bb790906c5f600c0f0f0200000705030808041e12054f2b0c5b25074e11004b0e005e1d00a85e12c46f20aa5e15753b06864d19bc8346f8d08ddba65aa16524b48754c19c6eab8456c89958cba76fd3b180bd904b946d2f987e55b29f84a48f75c4b5a4cebdafc1aa96664c3725150a29252217141536363c464a512f2f34443b326c563f977959c8ac88b28a85a78b87bda4a0c5a6a25f53530a0a0b0903010a0605110702320e024b1d094c19007f3c0dc58c45d69241cd883c904309a34800b76c15cfa054e5a74feead44b77b2e925f22875e238d5f1f815119936227bb874b88602d7657316f4e27835d2e976a2c9e712aba9e7aa68f75957754b79f85a38c768b76649c91837c7169312621201b1b35353837383c2622256c5f59c3b4a4d8cdc6efefe6ffffffa9aba7201915180b09150a061d090343150553230d7d3d15924a22da7d31ffb457fcac49f9a951f2b057f3c672ffd576f8b24bf3aa3addb45ed7a443ebbb6edac6acd1b58db1844aab7532b17a3e88633c886f5b85684d805c3587571d9b661cb17b30ae7f48d6ab71dfad72a6743f683c0c9a7543b89b78a48e785e44301d140d262424302e2e33302fa29c90fafbf1fdfdf5efefec54524e25191225150e1001042300005b1802d2853bef9a37ed9a48dd9856bf753abe681bd8892ff5c374e39f48da8c2fca7c1ee19531fcb653ffc158ebaf52ecb778e7cdb6d5c5afc8a882c5a47dccac88cba16fcfa365c6a97ca28e709b8c77aa9c8ab29b84a1774c9769349e743daa9065bca584ab8f6b9e7f549c79427b6745463f3723221e2b2b29231f1ff2f2eafffffcc7c8c436312c2f201724120d451a07ae7333e08c2bd86018ebaa5dffbb51fca132c66f1de08a21fca931bc67198d3200e38220ffac44fd961eeb7e14ffc573fcae64d16a2aae5b26a47b4cae8e61b28c5abd8e51be9766c6b194cfbc9ac1a6779a784799764d8e6f4a886c4c9d7c52b99a78d1c7b9bbaa8e9d7f546b410f754705a1844ca7a595807a6f3a3a332b2a26f4f4edffffffb9bab92d272435251b1f0806652c15f4bf76f3c17efec171fbab5ed05f1ddc6016ffb053ffa13efe912ef29734b26420e39335f8901fe57508b75601ca6e1fc05a0d9f4d10a06535b39373ccb69bbb99709a6016c69e6cb9a48ac3aa84aa772e985506bc813bc2a684a282647d48158c5d28bca58cb8a385bf9c6aa87d4ba56a2cb1752bb0a48fbcb9af7e7465292923f5f4ebfcfaf1c1bcb63732342f221d240a0942120d9b6550d8a574dda152d77f21a340117e1a02c35826f9a94ffcb95afdac44f2993cf5cc77f7c76ce3aa67bf804dab632ab5845bcaac8fceb092c5a47ac9a76cb490539a743ea67f49b3936fbda283bf8f4bac6c0cc68d2db07b2d985e16814509834a0b8b5714976d36aa9277a88c699c7a5aa17548ac926bbfbaae9385713a3126"
+    };
+  </script>
+
+  <!-- MAIN SCRIPT -->
+  <script>
+    /* =========================================================
+       AUDIO SYNTHESIZER & ROMANTIC SOUND ENGINE
+       ========================================================= */
+    class RomanticAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.isPlaying = false;
+        this.isMuted = false;
+        this.timer = null;
+        this.chordIdx = 0;
+        
+        // Romantic Chords: Fmaj7 -> G -> Em7 -> Am7
+        this.chords = [
+          [174.61, 261.63, 329.63, 392.00, 440.00], // F3, C4, E4, G4, A4
+          [196.00, 246.94, 293.66, 392.00, 493.88], // G3, B3, D4, G4, B4
+          [164.81, 246.94, 329.63, 392.00, 493.88], // E3, B3, E4, G4, B4
+          [220.00, 261.63, 329.63, 392.00, 523.25]  // A3, C4, E4, G4, C5
+        ];
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+          
+          // Master Gain & Reverb Filter
+          this.masterGain = this.ctx.createGain();
+          this.masterGain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+          this.masterGain.connect(this.ctx.destination);
+
+          // Delay for soft ambient echo
+          this.delay = this.ctx.createDelay();
+          this.delay.delayTime.setValueAtTime(0.35, this.ctx.currentTime);
+          this.delayFeedback = this.ctx.createGain();
+          this.delayFeedback.gain.setValueAtTime(0.3, this.ctx.currentTime);
+          
+          this.delay.connect(this.delayFeedback);
+          this.delayFeedback.connect(this.delay);
+          this.delay.connect(this.masterGain);
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playNote(freq, time, duration = 1.6, vol = 0.15) {
+        if (!this.ctx || this.isMuted) return;
+        const osc = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, time);
+
+        // Detuned soft triangle for warm piano warmth
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(freq * 1.002, time);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1600, time);
+        filter.Q.setValueAtTime(1.2, time);
+
+        gain.gain.setValueAtTime(0.001, time);
+        gain.gain.exponentialRampToValueAtTime(vol, time + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+        osc.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+        gain.connect(this.delay);
+
+        osc.start(time);
+        osc2.start(time);
+        osc.stop(time + duration);
+        osc2.stop(time + duration);
+      }
+
+      startMelody() {
+        this.init();
+        if (this.isPlaying) return;
+        this.isPlaying = true;
+        this.chordIdx = 0;
+
+        const playArpeggio = () => {
+          if (!this.isPlaying || !this.ctx) return;
+          const now = this.ctx.currentTime;
+          const chord = this.chords[this.chordIdx % this.chords.length];
+          this.chordIdx++;
+
+          // Roll notes of the chord
+          chord.forEach((freq, idx) => {
+            const noteTime = now + idx * 0.28;
+            this.playNote(freq, noteTime, 1.8, idx === 0 ? 0.22 : 0.14);
+          });
+
+          // Occasional high sparkle note
+          if (Math.random() > 0.4) {
+            const highFreq = chord[Math.floor(Math.random() * chord.length)] * 2;
+            this.playNote(highFreq, now + 1.2, 1.2, 0.08);
+          }
+
+          this.timer = setTimeout(playArpeggio, 1600);
+        };
+
+        playArpeggio();
+      }
+
+      stopMelody() {
+        this.isPlaying = false;
+        if (this.timer) clearTimeout(this.timer);
+      }
+
+      toggleMute() {
+        this.isMuted = !this.isMuted;
+        if (this.masterGain && this.ctx) {
+          this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 0.4, this.ctx.currentTime);
+        }
+        return this.isMuted;
+      }
+
+      // Sound Effects
+      playWarpSound() {
+        if (!this.ctx || this.isMuted) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 2.5);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        osc.start(now);
+        osc.stop(now + 2.5);
+      }
+
+      playLockSound() {
+        if (!this.ctx || this.isMuted) return;
+        const now = this.ctx.currentTime;
+        this.playNote(880, now, 0.4, 0.2);
+        this.playNote(1318.51, now + 0.15, 0.6, 0.25);
+      }
+
+      playShatterSound() {
+        if (!this.ctx || this.isMuted) return;
+        const now = this.ctx.currentTime;
+        const freqs = [1046.5, 1318.5, 1567.98, 2093.0, 2637.0];
+        freqs.forEach((f, i) => {
+          this.playNote(f, now + i * 0.06, 0.8, 0.12);
+        });
+      }
+
+      playHarpGlissando() {
+        if (!this.ctx || this.isMuted) return;
+        const now = this.ctx.currentTime;
+        const scale = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51];
+        scale.forEach((f, i) => {
+          this.playNote(f, now + i * 0.08, 1.2, 0.1);
+        });
+      }
+
+      playTypeClick() {
+        if (!this.ctx || this.isMuted) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1200 + Math.random() * 400, now);
+        gain.gain.setValueAtTime(0.02, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        osc.start(now);
+        osc.stop(now + 0.03);
+      }
+
+      playHeartPop() {
+        if (!this.ctx || this.isMuted) return;
+        const now = this.ctx.currentTime;
+        const f = 600 + Math.random() * 400;
+        this.playNote(f, now, 0.3, 0.15);
+        this.playNote(f * 1.5, now + 0.05, 0.3, 0.12);
+      }
+    }
+
+    const soundEngine = new RomanticAudioEngine();
+
+    /* =========================================================
+       THREE.JS SCENE SETUP: STARFIELD, EARTH, PARTICLES
+       ========================================================= */
+    const canvas = document.getElementById('webgl-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
+    camera.position.set(0, 120, 1000);
+
+    // Ambient & Directional Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+
+    const sunLight = new THREE.DirectionalLight(0xfff6e6, 1.4);
+    sunLight.position.set(300, 200, 400);
+    scene.add(sunLight);
+
+    /* ---------------------------------------------------------
+       1. STARFIELD (Three.js Galaxy Particles)
+       --------------------------------------------------------- */
+    const STAR_COUNT = 4500;
+    const starGeo = new THREE.BufferGeometry();
+    const starPositions = new Float32Array(STAR_COUNT * 3);
+    const starColors = new Float32Array(STAR_COUNT * 3);
+
+    const palette = [
+      new THREE.Color('#ffffff'),
+      new THREE.Color('#ffeaa7'),
+      new THREE.Color('#74b9ff'),
+      new THREE.Color('#fd79a8'),
+      new THREE.Color('#a29bfe')
+    ];
+
+    for (let i = 0; i < STAR_COUNT; i++) {
+      const r = 300 + Math.random() * 1800;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(Math.random() * 2 - 1);
+
+      const x = r * Math.sin(phi) * Math.cos(theta);
+      const y = r * Math.sin(phi) * Math.sin(theta);
+      const z = r * Math.cos(phi);
+
+      starPositions[i * 3] = x;
+      starPositions[i * 3 + 1] = y;
+      starPositions[i * 3 + 2] = z;
+
+      const c = palette[Math.floor(Math.random() * palette.length)];
+      starColors[i * 3] = c.r;
+      starColors[i * 3 + 1] = c.g;
+      starColors[i * 3 + 2] = c.b;
+    }
+
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+
+    function createCircleTexture() {
+      const cvs = document.createElement('canvas');
+      cvs.width = 64; cvs.height = 64;
+      const ctx = cvs.getContext('2d');
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      grad.addColorStop(0.3, 'rgba(255, 220, 240, 0.8)');
+      grad.addColorStop(0.7, 'rgba(255, 120, 180, 0.2)');
+      grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 64, 64);
+      return new THREE.CanvasTexture(cvs);
+    }
+
+    const starTexture = createCircleTexture();
+    const starMaterial = new THREE.PointsMaterial({
+      size: 4,
+      map: starTexture,
+      vertexColors: true,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const starField = new THREE.Points(starGeo, starMaterial);
+    scene.add(starField);
+
+    /* ---------------------------------------------------------
+       2. PROCEDURAL 3D EARTH GLOBE
+       --------------------------------------------------------- */
+    const EARTH_RADIUS = 80;
+
+    function createEarthTexture() {
+      const cvs = document.createElement('canvas');
+      cvs.width = 2048; cvs.height = 1024;
+      const ctx = cvs.getContext('2d');
+
+      // Ocean Background
+      const oceanGrad = ctx.createLinearGradient(0, 0, 0, cvs.height);
+      oceanGrad.addColorStop(0, '#091c38');
+      oceanGrad.addColorStop(0.5, '#07152b');
+      oceanGrad.addColorStop(1, '#091c38');
+      ctx.fillStyle = oceanGrad;
+      ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+      // Lat/Lon subtle grid
+      ctx.strokeStyle = 'rgba(116, 185, 255, 0.08)';
+      ctx.lineWidth = 1;
+      for (let lat = -80; lat <= 80; lat += 20) {
+        const y = ((90 - lat) / 180) * cvs.height;
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cvs.width, y); ctx.stroke();
+      }
+      for (let lon = -180; lon <= 180; lon += 30) {
+        const x = ((lon + 180) / 360) * cvs.width;
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, cvs.height); ctx.stroke();
+      }
+
+      function toPx(lon, lat) {
+        return [
+          ((lon + 180) / 360) * cvs.width,
+          ((90 - lat) / 180) * cvs.height
+        ];
+      }
+
+      function drawPolygon(pts, fill, stroke) {
+        if (!pts.length) return;
+        ctx.beginPath();
+        const [x0, y0] = toPx(pts[0][0], pts[0][1]);
+        ctx.moveTo(x0, y0);
+        for (let i = 1; i < pts.length; i++) {
+          const [x, y] = toPx(pts[i][0], pts[i][1]);
+          ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fillStyle = fill;
+        ctx.fill();
+        if (stroke) {
+          ctx.strokeStyle = stroke;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+      }
+
+      // Continents
+      const eurasia = [
+        [-10,36], [0,45], [10,55], [30,70], [60,70], [100,75], [140,70], [170,65], [180,60],
+        [170,55], [145,45], [135,35], [122,30], [120,22], [109,18], [105,10], [100,2], [98,8],
+        [90,22], [80,15], [70,25], [60,25], [50,15], [45,12], [35,30], [25,35], [15,40], [0,40], [-10,36]
+      ];
+      const africa = [
+        [-18,15], [-10,35], [10,37], [32,32], [50,12], [51,10], [45,0], [40,-10], 
+        [33,-28], [28,-34], [18,-34], [12,-20], [10,-5], [0,5], [-15,10], [-18,15]
+      ];
+      const northAmerica = [
+        [-168,65], [-140,70], [-120,70], [-85,70], [-70,60], [-55,50], [-65,45], 
+        [-75,35], [-80,25], [-97,20], [-105,20], [-110,30], [-120,35], [-124,38], 
+        [-125,48], [-140,58], [-168,65]
+      ];
+      const southAmerica = [
+        [-80,10], [-60,10], [-35,-5], [-38,-15], [-55,-35], [-68,-55], [-75,-50], 
+        [-70,-20], [-80,-5], [-80,10]
+      ];
+      const australia = [
+        [114,-22], [125,-15], [135,-12], [145,-15], [153,-28], [150,-38], [140,-38], 
+        [115,-35], [114,-22]
+      ];
+
+      [eurasia, africa, northAmerica, southAmerica, australia].forEach(poly => {
+        drawPolygon(poly, '#1b3b2c', '#2c5942');
+      });
+
+      // VIETNAM HIGH-DETAIL S-CURVE HIGHLIGHT
+      const vietnamS = [
+        [102.1, 22.5], [103.8, 22.8], [105.3, 23.4], [106.7, 23.0], [108.0, 21.5], 
+        [106.8, 20.8], [105.8, 18.7], [106.5, 17.5], [107.5, 16.5], [108.3, 15.5], 
+        [109.2, 13.0], [109.3, 12.2], [108.3, 11.0], [107.2, 10.3], [105.0, 8.6], 
+        [104.5, 10.3], [105.0, 10.8], [106.0, 11.8], [107.5, 14.5], [105.5, 17.0], 
+        [104.0, 19.5], [102.5, 21.5], [102.1, 22.5]
+      ];
+      drawPolygon(vietnamS, '#059669', '#fbbf24');
+
+      // Archipelagos: Hoàng Sa & Trường Sa
+      const hs = toPx(112.0, 16.5);
+      const ts = toPx(114.0, 10.0);
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath(); ctx.arc(hs[0], hs[1], 4, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(ts[0], ts[1], 4, 0, Math.PI * 2); ctx.fill();
+
+      // Bến Cát Coordinate Glowing Beacon on Canvas
+      const [bcX, bcY] = toPx(106.6087, 11.1611);
+      ctx.fillStyle = '#ff4d6d';
+      ctx.beginPath(); ctx.arc(bcX, bcY, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#ffeaa7';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      const texture = new THREE.CanvasTexture(cvs);
+      return texture;
+    }
+
+    const earthGroup = new THREE.Group();
+    scene.add(earthGroup);
+
+    // Earth Sphere Mesh
+    const earthGeo = new THREE.SphereGeometry(EARTH_RADIUS, 64, 64);
+    const earthMat = new THREE.MeshStandardMaterial({
+      map: createEarthTexture(),
+      roughness: 0.7,
+      metalness: 0.1
+    });
+    const earthMesh = new THREE.Mesh(earthGeo, earthMat);
+    earthGroup.add(earthMesh);
+
+    // Earth Atmosphere Halo Shader
+    const atmosphereMat = new THREE.ShaderMaterial({
+      vertexShader: `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vNormal;
+        void main() {
+          float intensity = pow(0.68 - dot(vNormal, vec3(0, 0, 1.0)), 2.8);
+          gl_FragColor = vec4(0.35, 0.75, 1.0, 1.0) * intensity;
+        }
+      `,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+      transparent: true
+    });
+    const atmosphereMesh = new THREE.Mesh(new THREE.SphereGeometry(EARTH_RADIUS * 1.04, 64, 64), atmosphereMat);
+    earthGroup.add(atmosphereMesh);
+
+    /* ---------------------------------------------------------
+       3. 3D COORDINATE BEACON ON BẾN CÁT (11.1611°N, 106.6087°E)
+       --------------------------------------------------------- */
+    function latLonToVector3(lat, lon, radius) {
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lon + 180) * (Math.PI / 180);
+      return new THREE.Vector3(
+        -radius * Math.sin(phi) * Math.cos(theta),
+        radius * Math.cos(phi),
+        radius * Math.sin(phi) * Math.sin(theta)
+      );
+    }
+
+    const benCatPos = latLonToVector3(11.1611, 106.6087, EARTH_RADIUS);
+    const benCatNormal = benCatPos.clone().normalize();
+
+    // Beacon Light Beam (Cylinder shooting out into space)
+    const beamGeo = new THREE.CylinderGeometry(0.3, 3.5, 30, 16);
+    const beamMat = new THREE.MeshBasicMaterial({
+      color: 0xff4d6d,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending
+    });
+    const beaconBeam = new THREE.Mesh(beamGeo, beamMat);
+    beaconBeam.position.copy(benCatPos).add(benCatNormal.clone().multiplyScalar(15));
+    beaconBeam.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), benCatNormal);
+    earthGroup.add(beaconBeam);
+
+    // Pulsing Concentric Beacon Rings
+    const ringGeo = new THREE.RingGeometry(1, 3.5, 32);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0xffd166,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending
+    });
+    const beaconRing = new THREE.Mesh(ringGeo, ringMat);
+    beaconRing.position.copy(benCatPos).add(benCatNormal.clone().multiplyScalar(0.4));
+    beaconRing.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), benCatNormal);
+    earthGroup.add(beaconRing);
+
+    // Beacon Point Light
+    const beaconLight = new THREE.PointLight(0xff4d6d, 3, 50);
+    beaconLight.position.copy(benCatPos).add(benCatNormal.clone().multiplyScalar(2));
+    earthGroup.add(beaconLight);
+
+    /* ---------------------------------------------------------
+       4. SCENE 3: PARTICLE MORPHING ENGINE (Street View -> Girlfriend)
+       --------------------------------------------------------- */
+    const GRID_SIZE = 50;
+    const PARTICLE_COUNT = GRID_SIZE * GRID_SIZE; // 2500
+
+    const morphGeo = new THREE.BufferGeometry();
+    const morphPositions = new Float32Array(PARTICLE_COUNT * 3);
+    const morphColors = new Float32Array(PARTICLE_COUNT * 3);
+    const morphSizes = new Float32Array(PARTICLE_COUNT);
+
+    const posA = []; // Streetview 4:3 grid
+    const posB = []; // Girlfriend portrait 9:16 grid
+    const velocities = [];
+    const colorsA = [];
+    const colorsB = [];
+
+    const svHex = window.EMBEDDED_COLORS.streetview;
+    const gfHex = window.EMBEDDED_COLORS.girlfriend;
+
+    for (let r = 0; r < GRID_SIZE; r++) {
+      for (let c = 0; c < GRID_SIZE; c++) {
+        const i = r * GRID_SIZE + c;
+
+        // Street View Aspect (w: 52, h: 39)
+        const xA = (c - GRID_SIZE / 2) * 1.05;
+        const yA = (GRID_SIZE / 2 - r) * 0.78;
+        const zA = 0;
+        posA.push(new THREE.Vector3(xA, yA, zA));
+
+        // Girlfriend Portrait Aspect (w: 36, h: 64)
+        const xB = (c - GRID_SIZE / 2) * 0.72;
+        const yB = (GRID_SIZE / 2 - r) * 1.28;
+        const zB = 0;
+        posB.push(new THREE.Vector3(xB, yB, zB));
+
+        // Explosion velocity in 3D
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 15 + Math.random() * 35;
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+        const vz = (Math.random() - 0.4) * speed * 1.5;
+        velocities.push(new THREE.Vector3(vx, vy, vz));
+
+        // Colors from hex
+        const svR = parseInt(svHex.substr(i * 6, 2), 16) / 255 || 0.8;
+        const svG = parseInt(svHex.substr(i * 6 + 2, 2), 16) / 255 || 0.6;
+        const svB = parseInt(svHex.substr(i * 6 + 4, 2), 16) / 255 || 0.5;
+        colorsA.push(new THREE.Color(svR, svG, svB));
+
+        const gfR = parseInt(gfHex.substr(i * 6, 2), 16) / 255 || 1.0;
+        const gfG = parseInt(gfHex.substr(i * 6 + 2, 2), 16) / 255 || 0.7;
+        const gfB = parseInt(gfHex.substr(i * 6 + 4, 2), 16) / 255 || 0.8;
+        colorsB.push(new THREE.Color(gfR, gfG, gfB));
+
+        morphPositions[i * 3] = xA;
+        morphPositions[i * 3 + 1] = yA;
+        morphPositions[i * 3 + 2] = zA;
+
+        morphColors[i * 3] = svR;
+        morphColors[i * 3 + 1] = svG;
+        morphColors[i * 3 + 2] = svB;
+
+        morphSizes[i] = 3.5 + Math.random() * 2.5;
+      }
+    }
+
+    morphGeo.setAttribute('position', new THREE.BufferAttribute(morphPositions, 3));
+    morphGeo.setAttribute('color', new THREE.BufferAttribute(morphColors, 3));
+
+    const morphMat = new THREE.PointsMaterial({
+      size: 4.5,
+      map: starTexture,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const morphParticleMesh = new THREE.Points(morphGeo, morphMat);
+    morphParticleMesh.position.set(0, 0, 40);
+    scene.add(morphParticleMesh);
+
+    const morphCtrl = {
+      progress: 0,
+      explode: 0,
+      swirl: 0,
+      opacity: 0
+    };
+
+    /* =========================================================
+       CANVAS 2D: FLOWER RAIN & FLOATING HEARTS (SCENE 4)
+       ========================================================= */
+    const flowerCanvas = document.getElementById('flower-canvas');
+    const fCtx = flowerCanvas.getContext('2d');
+
+    function resizeFlowerCanvas() {
+      flowerCanvas.width = window.innerWidth;
+      flowerCanvas.height = window.innerHeight;
+    }
+    resizeFlowerCanvas();
+
+    class RosePetal {
+      constructor() {
+        this.reset(true);
+      }
+      reset(initial = false) {
+        this.x = Math.random() * flowerCanvas.width;
+        this.y = initial ? Math.random() * flowerCanvas.height : -30;
+        this.size = 12 + Math.random() * 16;
+        this.vy = 1.2 + Math.random() * 2.2;
+        this.vx = (Math.random() - 0.5) * 1.5;
+        this.angleX = Math.random() * Math.PI * 2;
+        this.angleY = Math.random() * Math.PI * 2;
+        this.angleZ = Math.random() * Math.PI * 2;
+        this.rotSpeedX = 0.02 + Math.random() * 0.03;
+        this.rotSpeedY = 0.02 + Math.random() * 0.03;
+        this.rotSpeedZ = 0.01 + Math.random() * 0.02;
+        this.opacity = 0.65 + Math.random() * 0.35;
+        
+        const shades = ['#ff4d6d', '#c9184a', '#ff758f', '#a4133c', '#ff8fa3'];
+        this.color = shades[Math.floor(Math.random() * shades.length)];
+      }
+      update() {
+        this.y += this.vy;
+        this.x += Math.sin(this.y * 0.01) * 1.2 + this.vx;
+        this.angleX += this.rotSpeedX;
+        this.angleY += this.rotSpeedY;
+        this.angleZ += this.rotSpeedZ;
+
+        if (this.y > flowerCanvas.height + 40) {
+          this.reset(false);
+        }
+      }
+      draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angleZ);
+        ctx.scale(Math.cos(this.angleX), Math.sin(this.angleY));
+        ctx.globalAlpha = this.opacity;
+
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.moveTo(0, -this.size);
+        ctx.bezierCurveTo(this.size * 0.8, -this.size * 0.8, this.size * 1.1, this.size * 0.5, 0, this.size);
+        ctx.bezierCurveTo(-this.size * 1.1, this.size * 0.5, -this.size * 0.8, -this.size * 0.8, 0, -this.size);
+        ctx.fill();
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, this.size * 0.3, this.size * 0.6, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    class FloatingHeart {
+      constructor() {
+        this.reset(true);
+      }
+      reset(initial = false) {
+        this.x = Math.random() * flowerCanvas.width;
+        this.y = initial ? Math.random() * flowerCanvas.height : flowerCanvas.height + 30;
+        this.size = 10 + Math.random() * 18;
+        this.vy = -(0.8 + Math.random() * 1.5);
+        this.vx = (Math.random() - 0.5) * 0.8;
+        this.opacity = 0.4 + Math.random() * 0.5;
+        this.pulse = Math.random() * Math.PI;
+      }
+      update() {
+        this.y += this.vy;
+        this.x += Math.sin(this.y * 0.015) * 0.8;
+        this.pulse += 0.05;
+        if (this.y < -40) {
+          this.reset(false);
+        }
+      }
+      draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        const scale = 1 + Math.sin(this.pulse) * 0.12;
+        ctx.scale(scale, scale);
+        ctx.globalAlpha = this.opacity;
+
+        ctx.fillStyle = '#ff4d6d';
+        ctx.shadowColor = '#ff758f';
+        ctx.shadowBlur = 15;
+
+        ctx.beginPath();
+        const s = this.size;
+        ctx.moveTo(0, s * 0.3);
+        ctx.bezierCurveTo(-s * 0.5, -s * 0.3, -s, s * 0.3, 0, s);
+        ctx.bezierCurveTo(s, s * 0.3, s * 0.5, -s * 0.3, 0, s * 0.3);
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    const burstCanvas = document.getElementById('burst-canvas');
+    const bCtx = burstCanvas.getContext('2d');
+    let burstParticles = [];
+
+    function resizeBurstCanvas() {
+      burstCanvas.width = window.innerWidth;
+      burstCanvas.height = window.innerHeight;
+    }
+    resizeBurstCanvas();
+
+    function createHeartBurst(originX, originY, count = 35) {
+      soundEngine.playHeartPop();
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 3 + Math.random() * 8;
+        burstParticles.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 2.5,
+          size: 10 + Math.random() * 16,
+          life: 1.0,
+          decay: 0.015 + Math.random() * 0.02,
+          color: ['#ff4d6d', '#ffd166', '#ff758f', '#ffffff'][Math.floor(Math.random() * 4)]
+        });
+      }
+    }
+
+    const petals = Array.from({ length: 65 }, () => new RosePetal());
+    const hearts = Array.from({ length: 30 }, () => new FloatingHeart());
+
+    /* =========================================================
+       ANIMATION & RENDER LOOP
+       ========================================================= */
+    let clock = new THREE.Clock();
+    let ringScale = 1.0;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      const time = clock.getElapsedTime();
+
+      // Starfield subtle rotation & twinkle
+      starField.rotation.y = time * 0.015;
+      starField.rotation.x = Math.sin(time * 0.01) * 0.05;
+
+      // Pulse beacon ring
+      ringScale += delta * 1.5;
+      if (ringScale > 3.0) ringScale = 0.8;
+      beaconRing.scale.set(ringScale, ringScale, ringScale);
+      beaconRing.material.opacity = Math.max(0, 1 - (ringScale - 0.8) / 2.2);
+
+      // Light beam pulsation
+      beaconBeam.material.opacity = 0.5 + Math.sin(time * 6) * 0.35;
+
+      // Particle Morphing Update
+      if (morphCtrl.opacity > 0.01) {
+        morphMat.opacity = morphCtrl.opacity;
+        const positions = morphGeo.attributes.position.array;
+        const colors = morphGeo.attributes.color.array;
+
+        const p = morphCtrl.progress;
+        const exp = morphCtrl.explode;
+        const sw = morphCtrl.swirl;
+
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          const a = posA[i];
+          const b = posB[i];
+          const v = velocities[i];
+          const colA = colorsA[i];
+          const colB = colorsB[i];
+
+          let x = a.x + (b.x - a.x) * p;
+          let y = a.y + (b.y - a.y) * p;
+          let z = a.z + (b.z - a.z) * p;
+
+          x += v.x * exp * 1.8;
+          y += v.y * exp * 1.8;
+          z += v.z * exp * 2.2;
+
+          if (sw > 0.01) {
+            const dist = Math.sqrt(x * x + y * y);
+            const angleOffset = sw * 2.5 * (1 - Math.min(dist / 60, 1));
+            const curAngle = Math.atan2(y, x) + angleOffset;
+            x = Math.cos(curAngle) * dist;
+            y = Math.sin(curAngle) * dist;
+          }
+
+          positions[i * 3] = x;
+          positions[i * 3 + 1] = y;
+          positions[i * 3 + 2] = z;
+
+          const flash = Math.sin(p * Math.PI) * 0.4;
+          colors[i * 3] = colA.r + (colB.r - colA.r) * p + flash;
+          colors[i * 3 + 1] = colA.g + (colB.g - colA.g) * p + flash * 0.8;
+          colors[i * 3 + 2] = colA.b + (colB.b - colA.b) * p;
+        }
+
+        morphGeo.attributes.position.needsUpdate = true;
+        morphGeo.attributes.color.needsUpdate = true;
+      }
+
+      renderer.render(scene, camera);
+
+      if (flowerCanvas.style.opacity > 0.01) {
+        fCtx.clearRect(0, 0, flowerCanvas.width, flowerCanvas.height);
+        hearts.forEach(h => { h.update(); h.draw(fCtx); });
+        petals.forEach(p => { p.update(); p.draw(fCtx); });
+      }
+
+      if (burstParticles.length > 0) {
+        bCtx.clearRect(0, 0, burstCanvas.width, burstCanvas.height);
+        for (let i = burstParticles.length - 1; i >= 0; i--) {
+          const pt = burstParticles[i];
+          pt.x += pt.vx;
+          pt.y += pt.vy;
+          pt.vy += 0.15;
+          pt.life -= pt.decay;
+
+          if (pt.life <= 0) {
+            burstParticles.splice(i, 1);
+            continue;
+          }
+
+          bCtx.save();
+          bCtx.translate(pt.x, pt.y);
+          bCtx.globalAlpha = pt.life;
+          bCtx.fillStyle = pt.color;
+          bCtx.shadowColor = pt.color;
+          bCtx.shadowBlur = 10;
+
+          const s = pt.size * pt.life;
+          bCtx.beginPath();
+          bCtx.moveTo(0, s * 0.3);
+          bCtx.bezierCurveTo(-s * 0.5, -s * 0.3, -s, s * 0.3, 0, s);
+          bCtx.bezierCurveTo(s, s * 0.3, s * 0.5, -s * 0.3, 0, s * 0.3);
+          bCtx.fill();
+          bCtx.restore();
+        }
+      }
+    }
+    animate();
+
+    /* =========================================================
+       TIMELINE & STORY TRANSITION ORCHESTRATION (GSAP)
+       ========================================================= */
+    const screenStart = document.getElementById('screen-start');
+    const screenCoord = document.getElementById('screen-coord');
+    const streetviewCard = document.getElementById('streetview-card');
+    const coordBadge = document.getElementById('coord-badge');
+    const screenFinal = document.getElementById('screen-final');
+    const typewriterHighlight = document.getElementById('typewriter-highlight');
+    const typewriterBody = document.getElementById('typewriter-body');
+    const btnAudio = document.getElementById('btn-audio');
+    const audioIcon = document.getElementById('audio-icon');
+    const eqBars = document.getElementById('eq-bars');
+
+    const benCatVec = latLonToVector3(11.1611, 106.6087, EARTH_RADIUS).normalize();
+    const cameraFrontNormal = new THREE.Vector3(0, 0.08, 0.995).normalize();
+    const targetQuat = new THREE.Quaternion().setFromUnitVectors(benCatVec, cameraFrontNormal);
+
+    let isPlayingStory = false;
+
+    function runCinematicJourney() {
+      if (isPlayingStory) return;
+      isPlayingStory = true;
+
+      soundEngine.startMelody();
+
+      gsap.to(screenStart, {
+        opacity: 0,
+        scale: 0.95,
+        duration: 1.2,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          screenStart.style.display = 'none';
+        }
+      });
+
+      setTimeout(() => soundEngine.playWarpSound(), 400);
+
+      const masterTL = gsap.timeline();
+
+      // SCENE 1: FLY THROUGH GALAXY & ZOOM TO VIETNAM / BẾN CÁT
+      const quatObj = { t: 0 };
+      const startQuat = earthGroup.quaternion.clone();
+
+      masterTL.to(camera.position, {
+        x: 0,
+        y: 15,
+        z: 145,
+        duration: 4.8,
+        ease: 'power3.inOut'
+      }, 0);
+
+      masterTL.to(quatObj, {
+        t: 1,
+        duration: 4.8,
+        ease: 'power3.inOut',
+        onUpdate: () => {
+          THREE.Quaternion.slerp(startQuat, targetQuat, earthGroup.quaternion, quatObj.t);
+        }
+      }, 0);
+
+      // SCENE 2: TỌA ĐỘ ĐẶC BIỆT
+      masterTL.call(() => {
+        soundEngine.playLockSound();
+        screenCoord.style.opacity = '1';
+        gsap.to(coordBadge, { y: 0, opacity: 1, duration: 0.8, ease: 'back.out(1.5)' });
+        gsap.to(streetviewCard, { scale: 1, opacity: 1, duration: 1.0, ease: 'power2.out', delay: 0.2 });
+      }, null, 4.8);
+
+      masterTL.to({}, { duration: 3.5 });
+
+      // SCENE 3: PARTICLE DISPERSION & GIRLFRIEND APPEARANCE
+      masterTL.call(() => {
+        soundEngine.playShatterSound();
+
+        gsap.to(streetviewCard, { scale: 1.15, opacity: 0, duration: 0.4, ease: 'power2.in' });
+        gsap.to(coordBadge, { opacity: 0, y: -20, duration: 0.4 });
+
+        morphParticleMesh.position.set(0, 0, 75);
+        morphCtrl.opacity = 1;
+        morphCtrl.explode = 0;
+        morphCtrl.swirl = 0;
+        morphCtrl.progress = 0;
+
+        gsap.to(morphCtrl, {
+          explode: 1,
+          swirl: 1.2,
+          duration: 1.6,
+          ease: 'power2.out'
+        });
+
+        gsap.to(morphCtrl, {
+          progress: 1,
+          explode: 0,
+          swirl: 2.5,
+          duration: 2.2,
+          delay: 1.2,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            soundEngine.playHarpGlissando();
+            gsap.to(morphCtrl, { opacity: 0, duration: 1.2 });
+            revealFinalScene();
+          }
+        });
+      });
+    }
+
+    // SCENE 4: FLOWER RAIN & TYPEWRITER WISHES
+    function revealFinalScene() {
+      gsap.to(flowerCanvas, { opacity: 1, duration: 1.5 });
+      screenFinal.style.pointerEvents = 'auto';
+      gsap.to(screenFinal, { opacity: 1, duration: 1.2, ease: 'power2.out' });
+
+      createHeartBurst(window.innerWidth / 2, window.innerHeight / 2, 45);
+      startTypewriter();
+    }
+
+    function startTypewriter() {
+      const mainWish = "Chúc em ngày 20/10 luôn rạng rỡ, xinh đẹp và hạnh phúc nhất vũ trụ! ✨";
+      const extendedLetter = "Cảm ơn em vì đã xuất hiện và sưởi ấm thế giới của anh. Chúc cô gái nhỏ của anh một ngày 20/10 tràn ngập tiếng cười, nhận được thật nhiều hoa, quà và những điều dịu dàng nhất. Dù vũ trụ này có bao la rộng lớn thế nào, với anh em vẫn mãi là điều tuyệt vời và quý giá nhất. Yêu em thật nhiều! ❤️";
+
+      let idx1 = 0;
+      let idx2 = 0;
+      typewriterHighlight.innerHTML = '';
+      typewriterBody.innerHTML = '';
+
+      function typeMain() {
+        if (idx1 < mainWish.length) {
+          typewriterHighlight.innerHTML = mainWish.substring(0, idx1 + 1) + '<span class="inline-block w-2 h-5 bg-amber-300 ml-1 animate-pulse"></span>';
+          soundEngine.playTypeClick();
+          idx1++;
+          setTimeout(typeMain, 45);
+        } else {
+          typewriterHighlight.innerHTML = mainWish;
+          setTimeout(typeBody, 400);
+        }
+      }
+
+      function typeBody() {
+        if (idx2 < extendedLetter.length) {
+          typewriterBody.innerHTML = extendedLetter.substring(0, idx2 + 1) + '<span class="inline-block w-2 h-4 bg-rose-400 ml-1 animate-pulse"></span>';
+          if (idx2 % 2 === 0) soundEngine.playTypeClick();
+          idx2++;
+          setTimeout(typeBody, 35);
+        } else {
+          typewriterBody.innerHTML = extendedLetter;
+        }
+      }
+
+      typeMain();
+    }
+
+    /* =========================================================
+       EVENT LISTENERS & INTERACTION CONTROLS
+       ========================================================= */
+    document.getElementById('btn-start').addEventListener('click', (e) => {
+      createHeartBurst(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2, 25);
+      runCinematicJourney();
+    });
+
+    const btnHeart = document.getElementById('btn-heart');
+    const heartCounter = document.getElementById('heart-counter');
+    let heartCount = 9999;
+
+    btnHeart.addEventListener('click', (e) => {
+      heartCount += 1;
+      heartCounter.textContent = heartCount + '+';
+      const rect = btnHeart.getBoundingClientRect();
+      createHeartBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 30);
+      gsap.fromTo(btnHeart, { scale: 0.9 }, { scale: 1.05, duration: 0.3, ease: 'back.out(2)' });
+    });
+
+    document.getElementById('btn-replay').addEventListener('click', () => {
+      gsap.to(camera.position, { x: 0, y: 120, z: 1000, duration: 1.5, ease: 'power2.inOut' });
+      gsap.to(screenFinal, { opacity: 0, duration: 0.8 });
+      gsap.to(flowerCanvas, { opacity: 0, duration: 0.8 });
+      gsap.to(screenCoord, { opacity: 0, duration: 0.8 });
+
+      setTimeout(() => {
+        isPlayingStory = false;
+        screenStart.style.display = 'flex';
+        gsap.to(screenStart, { opacity: 1, scale: 1, duration: 1.0 });
+      }, 900);
+    });
+
+    btnAudio.addEventListener('click', () => {
+      const isMuted = soundEngine.toggleMute();
+      if (isMuted) {
+        audioIcon.className = 'fa-solid fa-volume-xmark text-sm text-slate-400';
+        eqBars.style.opacity = '0.3';
+      } else {
+        audioIcon.className = 'fa-solid fa-volume-high text-sm text-rose-400';
+        eqBars.style.opacity = '1';
+        if (!soundEngine.isPlaying) soundEngine.startMelody();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      resizeFlowerCanvas();
+      resizeBurstCanvas();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+      if (!isPlayingStory) {
+        camera.position.x = mouseX * 30;
+        camera.position.y = 120 - mouseY * 20;
+        camera.lookAt(0, 0, 0);
+      }
+    });
+  </script>
+</body>
+</html>
