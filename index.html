@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Mừng Ngày 20/10 - Món Quà Từ Vũ Trụ ❤️</title>
   
   <!-- Tailwind CSS -->
@@ -44,9 +44,21 @@
 
   <style>
     /* Custom Scrollbar & Utilities */
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
     ::-webkit-scrollbar-thumb { background: rgba(255, 77, 109, 0.5); border-radius: 9999px; }
+
+    /* Touch optimizations */
+    button, a {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Safe Area insets for modern phones (iPhone notch/island & home bar) */
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+      .safe-pb { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+      .safe-pt { padding-top: max(1rem, env(safe-area-inset-top)); }
+    }
 
     /* Glowing Animations */
     @keyframes pulseGlow {
@@ -64,17 +76,17 @@
 
     @keyframes floatGentle {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-10px) rotate(1deg); }
+      50% { transform: translateY(-8px) rotate(0.8deg); }
     }
     .float-card { animation: floatGentle 4.5s ease-in-out infinite; }
 
     @keyframes floatWord1 {
       0%, 100% { transform: translateY(0px) translateX(0px); }
-      50% { transform: translateY(-12px) translateX(6px); }
+      50% { transform: translateY(-10px) translateX(5px); }
     }
     @keyframes floatWord2 {
       0%, 100% { transform: translateY(0px) translateX(0px); }
-      50% { transform: translateY(-8px) translateX(-8px); }
+      50% { transform: translateY(-8px) translateX(-6px); }
     }
     .float-word-1 { animation: floatWord1 4s ease-in-out infinite; }
     .float-word-2 { animation: floatWord2 5s ease-in-out infinite; }
@@ -85,7 +97,7 @@
     }
   </style>
 </head>
-<body class="bg-[#050714] text-white font-sans overflow-x-hidden select-none m-0 p-0">
+<body class="bg-[#050714] text-white font-sans overflow-x-hidden select-none m-0 p-0 relative min-h-screen">
 
   <!-- Three.js Background Canvas -->
   <canvas id="webgl-canvas" class="fixed inset-0 w-full h-full z-0 block"></canvas>
@@ -97,58 +109,58 @@
   <canvas id="burst-canvas" class="fixed inset-0 w-full h-full z-40 pointer-events-none"></canvas>
 
   <!-- Top Right Audio Control Button -->
-  <div class="fixed top-5 right-5 z-50 flex items-center gap-3">
-    <button id="btn-audio" class="flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-900/70 hover:bg-slate-800/80 backdrop-blur-md border border-rose-500/40 text-rose-300 shadow-[0_0_15px_rgba(255,77,109,0.3)] transition-all transform hover:scale-105 active:scale-95 cursor-pointer">
-      <i id="audio-icon" class="fa-solid fa-volume-high text-sm"></i>
-      <div id="eq-bars" class="flex items-end gap-1 h-3.5">
+  <div class="fixed top-3 sm:top-5 right-3 sm:right-5 z-50 flex items-center gap-3">
+    <button id="btn-audio" class="flex items-center gap-2 sm:gap-2.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-slate-900/80 hover:bg-slate-800/90 backdrop-blur-md border border-rose-500/40 text-rose-300 shadow-[0_0_15px_rgba(255,77,109,0.3)] transition-all transform hover:scale-105 active:scale-95 cursor-pointer">
+      <i id="audio-icon" class="fa-solid fa-volume-high text-xs sm:text-sm"></i>
+      <div id="eq-bars" class="flex items-end gap-1 h-3 sm:h-3.5">
         <span class="w-1 bg-rose-400 rounded-full h-full animate-bounce" style="animation-duration: 0.6s"></span>
         <span class="w-1 bg-pink-400 rounded-full h-2/3 animate-bounce" style="animation-duration: 0.8s"></span>
         <span class="w-1 bg-amber-300 rounded-full h-4/5 animate-bounce" style="animation-duration: 0.5s"></span>
       </div>
-      <span class="text-xs font-medium tracking-wide hidden sm:inline">Giai Điệu</span>
+      <span class="text-[11px] sm:text-xs font-medium tracking-wide hidden xs:inline">Giai Điệu</span>
     </button>
   </div>
 
   <!-- ============================================== -->
   <!-- SCENE 0: GIAO DIỆN BẮT ĐẦU                     -->
   <!-- ============================================== -->
-  <div id="screen-start" class="fixed inset-0 z-30 flex flex-col items-center justify-center p-6 bg-radial from-slate-900/60 via-[#050714]/90 to-[#03040b]">
-    <div class="max-w-lg w-full text-center space-y-7 relative">
+  <div id="screen-start" class="fixed inset-0 z-30 flex flex-col items-center justify-center p-4 sm:p-6 bg-radial from-slate-900/60 via-[#050714]/90 to-[#03040b]">
+    <div class="max-w-lg w-full text-center space-y-5 sm:space-y-7 relative px-2">
       
       <!-- Decorative Glow Behind -->
       <div class="absolute -inset-10 bg-gradient-to-tr from-rose-500/20 via-pink-500/10 to-amber-500/20 blur-3xl -z-10 rounded-full pointer-events-none"></div>
 
       <!-- Badge -->
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/15 border border-rose-400/40 text-rose-300 text-xs font-semibold tracking-widest uppercase shadow-[0_0_20px_rgba(255,77,109,0.3)]">
+      <div class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-rose-500/15 border border-rose-400/40 text-rose-300 text-[11px] sm:text-xs font-semibold tracking-widest uppercase shadow-[0_0_20px_rgba(255,77,109,0.3)]">
         <i class="fa-solid fa-sparkles text-amber-300 animate-spin" style="animation-duration: 6s"></i>
         20 Tháng 10 • Ngày Phụ Nữ Việt Nam
       </div>
 
       <!-- Main Title -->
-      <div class="space-y-3">
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif font-bold tracking-tight bg-gradient-to-r from-rose-200 via-pink-100 to-amber-200 bg-clip-text text-transparent drop-shadow-[0_2px_15px_rgba(255,77,109,0.4)]">
+      <div class="space-y-2.5 sm:space-y-3">
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-serif font-bold tracking-tight bg-gradient-to-r from-rose-200 via-pink-100 to-amber-200 bg-clip-text text-transparent drop-shadow-[0_2px_15px_rgba(255,77,109,0.4)]">
           Món Quà Từ Vũ Trụ
         </h1>
-        <p class="text-base sm:text-lg text-rose-200/80 font-light max-w-md mx-auto leading-relaxed">
+        <p class="text-sm sm:text-base md:text-lg text-rose-200/80 font-light max-w-md mx-auto leading-relaxed">
           Giữa hàng tỷ vì sao trong thiên hà bao la, có một tọa độ đặc biệt nơi lưu giữ điều tuyệt vời nhất...
         </p>
       </div>
 
       <!-- Big Magic Button -->
-      <div class="pt-4">
-        <button id="btn-start" class="group relative inline-flex items-center justify-center gap-3.5 px-8 sm:px-10 py-4 sm:py-5 rounded-full bg-gradient-to-r from-rose-600 via-pink-600 to-amber-500 text-white font-medium text-lg sm:text-xl shadow-[0_0_35px_rgba(255,77,109,0.6)] hover:shadow-[0_0_55px_rgba(255,77,109,0.9)] transform hover:scale-105 active:scale-95 transition-all duration-300 border border-white/30 overflow-hidden cursor-pointer">
+      <div class="pt-2 sm:pt-4">
+        <button id="btn-start" class="group relative inline-flex items-center justify-center gap-3 px-7 sm:px-10 py-3.5 sm:py-5 rounded-full bg-gradient-to-r from-rose-600 via-pink-600 to-amber-500 text-white font-medium text-base sm:text-xl shadow-[0_0_35px_rgba(255,77,109,0.6)] hover:shadow-[0_0_55px_rgba(255,77,109,0.9)] transform hover:scale-105 active:scale-95 transition-all duration-300 border border-white/30 overflow-hidden cursor-pointer w-full sm:w-auto">
           <!-- Shimmer reflection effect -->
           <div class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
           
-          <i class="fa-solid fa-compass text-amber-200 group-hover:rotate-45 transition-transform duration-500 text-xl"></i>
+          <i class="fa-solid fa-compass text-amber-200 group-hover:rotate-45 transition-transform duration-500 text-lg sm:text-xl"></i>
           <span class="tracking-wider font-semibold">Khám Phá Bí Mật</span>
-          <i class="fa-solid fa-arrow-right text-rose-200 group-hover:translate-x-1.5 transition-transform duration-300 text-base"></i>
+          <i class="fa-solid fa-arrow-right text-rose-200 group-hover:translate-x-1.5 transition-transform duration-300 text-sm sm:text-base"></i>
         </button>
       </div>
 
       <!-- Music Recommendation Note -->
-      <p class="text-xs sm:text-sm text-slate-400/80 flex items-center justify-center gap-2 pt-2">
-        <i class="fa-solid fa-headphones text-rose-400"></i>
+      <p class="text-[11px] sm:text-sm text-slate-400/80 flex items-center justify-center gap-1.5 pt-1">
+        <i class="fa-solid fa-headphones text-rose-400 text-xs"></i>
         <span>Hãy bật âm lượng để cảm nhận trọn vẹn sự lãng mạn</span>
       </p>
     </div>
@@ -157,58 +169,56 @@
   <!-- ============================================== -->
   <!-- SCENE 2: TỌA ĐỘ ĐẶC BIỆT & STREET VIEW         -->
   <!-- ============================================== -->
-  <div id="screen-coord" class="fixed inset-0 z-20 flex flex-col items-center justify-center p-4 sm:p-6 pointer-events-none opacity-0">
+  <div id="screen-coord" class="fixed inset-0 z-20 flex flex-col items-center justify-center p-3 sm:p-6 pointer-events-none opacity-0">
     
     <!-- Holographic Radar & Target HUD Overlay -->
-    <div class="w-full max-w-xl mx-auto flex flex-col items-center gap-5">
+    <div class="w-full max-w-lg mx-auto flex flex-col items-center gap-3 sm:gap-5 px-2">
       
       <!-- Target Scan Badge -->
-      <div id="coord-badge" class="flex items-center gap-3 px-5 py-2 rounded-full bg-slate-900/80 border border-rose-500/50 backdrop-blur-md shadow-[0_0_25px_rgba(255,77,109,0.4)] transform -translate-y-6 transition-all duration-700">
-        <span class="relative flex h-3 w-3">
+      <div id="coord-badge" class="flex items-center gap-2 sm:gap-3 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-slate-900/85 border border-rose-500/50 backdrop-blur-md shadow-[0_0_25px_rgba(255,77,109,0.4)] transform -translate-y-6 transition-all duration-700">
+        <span class="relative flex h-2.5 w-2.5 sm:h-3 sm:w-3">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-rose-500"></span>
         </span>
-        <span class="text-xs sm:text-sm font-semibold tracking-widest text-rose-200 uppercase">
-          <i class="fa-solid fa-location-crosshairs mr-1.5 text-amber-300"></i> TỌA ĐỘ YÊU THƯƠNG ĐÃ ĐƯỢC KHÓA
+        <span class="text-[10px] sm:text-xs md:text-sm font-semibold tracking-widest text-rose-200 uppercase">
+          <i class="fa-solid fa-location-crosshairs mr-1 text-amber-300"></i> TỌA ĐỘ YÊU THƯƠNG ĐÃ ĐƯỢC KHÓA
         </span>
       </div>
 
-      <!-- Street View Card Container -->
-      <div id="streetview-card" class="w-full max-w-lg bg-slate-900/85 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-3 sm:p-4 border border-rose-500/40 shadow-[0_10px_50px_rgba(255,77,109,0.35)] transform scale-90 opacity-0 transition-all duration-700 float-card">
+      <!-- Street View Card Container (Adaptive size for Mobile & Laptop) -->
+      <div id="streetview-card" class="w-full max-w-sm sm:max-w-md md:max-w-lg bg-slate-900/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-3 sm:p-4 border border-rose-500/40 shadow-[0_10px_50px_rgba(255,77,109,0.35)] transform scale-90 opacity-0 transition-all duration-700 float-card">
         
-        <!-- Street View Header Bar -->
-        <div class="flex items-center justify-between pb-3 px-2 border-b border-white/10 text-xs sm:text-sm text-slate-300">
+        <!-- Header Bar -->
+        <div class="flex items-center justify-between pb-2.5 sm:pb-3 px-1 sm:px-2 border-b border-white/10 text-xs sm:text-sm text-slate-300">
           <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-rose-400">
-              <i class="fa-solid fa-map-pin text-sm"></i>
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-rose-400">
+              <i class="fa-solid fa-map-pin text-xs sm:text-sm"></i>
             </div>
             <div>
-              <div class="font-bold text-white tracking-wide">125 Đ. Ngô Quyền, Bến Cát</div>
-              <div class="text-[11px] text-rose-300/80">11°09'40.0"N • 106°36'31.3"E</div>
+              <div class="font-bold text-white tracking-wide text-xs sm:text-sm">125 Đ. Ngô Quyền, Bến Cát</div>
+              <div class="text-[10px] sm:text-[11px] text-rose-300/80">11°09'40.0"N • 106°36'31.3"E</div>
             </div>
           </div>
-          <span class="px-2.5 py-1 rounded-md bg-white/10 text-[11px] text-slate-300 font-medium flex items-center gap-1.5">
+          <span class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md bg-white/10 text-[10px] sm:text-[11px] text-slate-300 font-medium flex items-center gap-1">
             <i class="fa-solid fa-street-view text-amber-400"></i> Street View
           </span>
         </div>
 
-        <!-- Street View Photo Frame -->
-        <div class="relative mt-3 rounded-xl overflow-hidden aspect-[4/3] bg-black/60 shadow-inner group">
+        <!-- Photo Frame -->
+        <div class="relative mt-2.5 sm:mt-3 rounded-xl overflow-hidden aspect-[4/3] bg-black/60 shadow-inner group">
           <img id="img-streetview" src="streetview.jpg" alt="125 Đ. Ngô Quyền, Bến Cát" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
           
-          <!-- Google Maps Style Corner Badge -->
-          <div class="absolute bottom-2.5 left-2.5 px-3 py-1.5 rounded-lg bg-black/70 backdrop-blur-md text-[11px] text-white flex items-center gap-2 border border-white/20">
+          <div class="absolute bottom-2 left-2 sm:bottom-2.5 sm:left-2.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-black/75 backdrop-blur-md text-[10px] sm:text-[11px] text-white flex items-center gap-1.5 border border-white/20">
             <i class="fa-solid fa-location-dot text-rose-400"></i>
             <span>Nơi Kỷ Niệm Bắt Đầu</span>
           </div>
 
-          <!-- Crosshair Radar Scanning Effect -->
           <div class="absolute inset-0 scanline pointer-events-none opacity-40"></div>
         </div>
 
         <!-- Footer Caption -->
-        <div class="pt-3 px-2 text-center">
-          <p class="text-xs sm:text-sm text-rose-200/90 font-light italic">
+        <div class="pt-2.5 sm:pt-3 px-1 sm:px-2 text-center">
+          <p class="text-[11px] sm:text-xs md:text-sm text-rose-200/90 font-light italic">
             "Tọa độ bình yên nơi thế giới dịu dàng chào đón một người đặc biệt..."
           </p>
         </div>
@@ -219,55 +229,55 @@
   <!-- ============================================== -->
   <!-- SCENE 4: NGƯỜI YÊU & MƯA HOA & THƯ CHÚC        -->
   <!-- ============================================== -->
-  <div id="screen-final" class="fixed inset-0 z-20 flex items-center justify-center p-4 sm:p-6 overflow-y-auto pointer-events-auto opacity-0 transition-opacity duration-1000">
+  <div id="screen-final" class="fixed inset-0 z-20 flex items-center justify-center p-3 sm:p-6 overflow-y-auto pointer-events-auto opacity-0 transition-opacity duration-1000 safe-pb">
     
-    <div class="w-full max-w-5xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 py-8 relative">
+    <div class="w-full max-w-5xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-8 lg:gap-12 py-3 sm:py-6 my-auto relative">
 
-      <!-- Floating Orbiting Word Badges Around -->
-      <div id="word-tag-1" class="absolute -top-3 left-4 sm:left-12 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-pink-400/50 backdrop-blur-md text-xs sm:text-sm text-pink-200 font-medium shadow-[0_0_20px_rgba(255,117,143,0.4)] float-word-1 hidden sm:flex items-center gap-2 z-30">
+      <!-- Floating Orbiting Word Badges Around (Optimized visibility) -->
+      <div id="word-tag-1" class="absolute -top-3 left-2 sm:left-12 px-3 py-1 rounded-full bg-slate-900/85 border border-pink-400/50 backdrop-blur-md text-[10px] sm:text-xs text-pink-200 font-medium shadow-[0_0_20px_rgba(255,117,143,0.4)] float-word-1 hidden sm:flex items-center gap-1.5 z-30">
         <span>🌸 Xinh đẹp nhất vũ trụ</span>
       </div>
-      <div id="word-tag-2" class="absolute top-1/2 -left-6 sm:left-2 -translate-y-1/2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-amber-400/50 backdrop-blur-md text-xs sm:text-sm text-amber-200 font-medium shadow-[0_0_20px_rgba(255,209,102,0.4)] float-word-2 hidden md:flex items-center gap-2 z-30">
+      <div id="word-tag-2" class="absolute top-1/2 -left-4 sm:left-2 -translate-y-1/2 px-3 py-1 rounded-full bg-slate-900/85 border border-amber-400/50 backdrop-blur-md text-[10px] sm:text-xs text-amber-200 font-medium shadow-[0_0_20px_rgba(255,209,102,0.4)] float-word-2 hidden md:flex items-center gap-1.5 z-30">
         <span>✨ Nụ cười tỏa nắng</span>
       </div>
-      <div id="word-tag-3" class="absolute -bottom-2 left-1/4 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-rose-400/50 backdrop-blur-md text-xs sm:text-sm text-rose-200 font-medium shadow-[0_0_20px_rgba(255,77,109,0.4)] float-word-1 hidden sm:flex items-center gap-2 z-30">
+      <div id="word-tag-3" class="absolute -bottom-2 left-1/4 px-3 py-1 rounded-full bg-slate-900/85 border border-rose-400/50 backdrop-blur-md text-[10px] sm:text-xs text-rose-200 font-medium shadow-[0_0_20px_rgba(255,77,109,0.4)] float-word-1 hidden sm:flex items-center gap-1.5 z-30">
         <span>💖 Hạnh phúc ngập tràn</span>
       </div>
-      <div id="word-tag-4" class="absolute top-4 right-8 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-purple-400/50 backdrop-blur-md text-xs sm:text-sm text-purple-200 font-medium shadow-[0_0_20px_rgba(192,132,252,0.4)] float-word-2 hidden sm:flex items-center gap-2 z-30">
+      <div id="word-tag-4" class="absolute top-2 right-4 sm:right-8 px-3 py-1 rounded-full bg-slate-900/85 border border-purple-400/50 backdrop-blur-md text-[10px] sm:text-xs text-purple-200 font-medium shadow-[0_0_20px_rgba(192,132,252,0.4)] float-word-2 hidden sm:flex items-center gap-1.5 z-30">
         <span>👑 Công chúa của anh</span>
       </div>
-      <div id="word-tag-5" class="absolute -bottom-4 right-12 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-rose-400/50 backdrop-blur-md text-xs sm:text-sm text-rose-200 font-medium shadow-[0_0_20px_rgba(255,77,109,0.4)] float-word-1 hidden md:flex items-center gap-2 z-30">
-        <span>🌹 20/10 Rực Rỡ & May Mắn</span>
+      <div id="word-tag-5" class="absolute -bottom-3 right-8 px-3 py-1 rounded-full bg-slate-900/85 border border-rose-400/50 backdrop-blur-md text-[10px] sm:text-xs text-rose-200 font-medium shadow-[0_0_20px_rgba(255,77,109,0.4)] float-word-1 hidden md:flex items-center gap-1.5 z-30">
+        <span>🌹 20/10 Rực Rỡ</span>
       </div>
 
-      <!-- LEFT: GIRLFRIEND PORTRAIT CARD WITH GLOWING HALO AURA -->
-      <div id="girlfriend-container" class="relative flex-shrink-0 w-full max-w-[280px] sm:max-w-[320px] md:max-w-[340px] flex flex-col items-center">
+      <!-- LEFT: GIRLFRIEND PORTRAIT CARD (Responsive height for mobile & laptop) -->
+      <div id="girlfriend-container" class="relative flex-shrink-0 w-full max-w-[210px] sm:max-w-[270px] lg:max-w-[320px] flex flex-col items-center">
         
         <!-- Ethereal Radiant Aura Halo (Rotates & Pulses) -->
-        <div class="absolute -inset-6 sm:-inset-8 rounded-[40px] bg-gradient-to-tr from-rose-500/60 via-pink-500/40 to-amber-400/50 blur-2xl halo-aura opacity-80 -z-10"></div>
-        <div class="absolute -inset-2 rounded-[32px] bg-gradient-to-r from-rose-500 via-pink-400 to-amber-300 blur-md opacity-60 -z-10 pulse-glow"></div>
+        <div class="absolute -inset-4 sm:-inset-8 rounded-[32px] sm:rounded-[40px] bg-gradient-to-tr from-rose-500/60 via-pink-500/40 to-amber-400/50 blur-xl sm:blur-2xl halo-aura opacity-80 -z-10"></div>
+        <div class="absolute -inset-1.5 rounded-[26px] sm:rounded-[32px] bg-gradient-to-r from-rose-500 via-pink-400 to-amber-300 blur-md opacity-60 -z-10 pulse-glow"></div>
 
         <!-- Glassmorphism Card Frame -->
-        <div class="w-full bg-slate-900/85 backdrop-blur-2xl rounded-3xl p-3 sm:p-4 border-2 border-pink-400/50 shadow-[0_15px_60px_rgba(255,77,109,0.5)] float-card relative overflow-hidden">
+        <div class="w-full bg-slate-900/90 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 border-2 border-pink-400/50 shadow-[0_15px_60px_rgba(255,77,109,0.5)] float-card relative overflow-hidden">
           
           <!-- Top Badge -->
-          <div class="flex items-center justify-between pb-2.5 px-1">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/25 border border-rose-400/50 text-rose-200 text-[11px] font-semibold tracking-wider">
-              <i class="fa-solid fa-crown text-amber-300 text-xs"></i> Nàng Thơ Của Anh
+          <div class="flex items-center justify-between pb-2 px-1">
+            <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/25 border border-rose-400/50 text-rose-200 text-[10px] sm:text-[11px] font-semibold tracking-wider">
+              <i class="fa-solid fa-crown text-amber-300 text-[10px] sm:text-xs"></i> Nàng Thơ Của Anh
             </div>
-            <span class="text-[11px] text-pink-300/80 font-medium">20.10.2026</span>
+            <span class="text-[10px] sm:text-[11px] text-pink-300/80 font-medium">20.10.2026</span>
           </div>
 
-          <!-- Girlfriend Portrait Photo -->
-          <div class="relative rounded-2xl overflow-hidden aspect-[9/16] bg-black/60 shadow-xl group border border-white/20">
+          <!-- Girlfriend Portrait Photo with Height Limit on Mobile -->
+          <div class="relative rounded-xl sm:rounded-2xl overflow-hidden aspect-[9/16] max-h-[32vh] sm:max-h-[40vh] lg:max-h-none mx-auto bg-black/60 shadow-xl group border border-white/20">
             <img id="img-girlfriend" src="girlfriend.jpg" alt="Người Yêu Xinh Đẹp" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             
             <!-- Bottom Golden Shimmer Badge Overlay -->
-            <div class="absolute bottom-3 inset-x-3 p-2.5 rounded-xl bg-slate-950/75 backdrop-blur-md border border-pink-400/30 text-center shadow-lg">
-              <p class="font-cursive text-xl sm:text-2xl text-amber-200 font-bold tracking-wide drop-shadow">
+            <div class="absolute bottom-2 inset-x-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-slate-950/80 backdrop-blur-md border border-pink-400/30 text-center shadow-lg">
+              <p class="font-cursive text-base sm:text-xl text-amber-200 font-bold tracking-wide drop-shadow leading-tight">
                 Ngôi Sao Sáng Nhất ✨
               </p>
-              <p class="text-[10px] sm:text-[11px] text-pink-200/80 font-light">
+              <p class="text-[9px] sm:text-[10px] text-pink-200/80 font-light hidden xs:block">
                 Luôn rực rỡ và tràn đầy niềm vui
               </p>
             </div>
@@ -278,50 +288,50 @@
       <!-- RIGHT: ROMANTIC LETTER CARD WITH TYPEWRITER EFFECT -->
       <div id="letter-container" class="w-full max-w-xl flex flex-col justify-center">
         
-        <div class="bg-slate-900/85 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-rose-500/40 shadow-[0_15px_60px_rgba(255,77,109,0.35)] relative overflow-hidden">
+        <div class="bg-slate-900/90 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-rose-500/40 shadow-[0_15px_60px_rgba(255,77,109,0.35)] relative overflow-hidden">
           
           <!-- Ambient Corner Light -->
-          <div class="absolute -top-12 -right-12 w-32 h-32 bg-rose-500/20 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="absolute -top-12 -right-12 w-28 sm:w-32 h-28 sm:h-32 bg-rose-500/20 rounded-full blur-2xl pointer-events-none"></div>
 
           <!-- Envelope Header -->
-          <div class="flex items-center justify-between pb-4 border-b border-rose-500/20">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white shadow-[0_0_15px_rgba(255,77,109,0.5)]">
-                <i class="fa-solid fa-envelope-open-text text-lg"></i>
+          <div class="flex items-center justify-between pb-3 sm:pb-4 border-b border-rose-500/20">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white shadow-[0_0_15px_rgba(255,77,109,0.5)]">
+                <i class="fa-solid fa-envelope-open-text text-sm sm:text-lg"></i>
               </div>
               <div>
-                <span class="text-[11px] tracking-widest text-rose-300 font-bold uppercase block">Gửi Người Yêu Thương</span>
-                <h3 class="text-lg sm:text-xl font-serif font-bold text-white">Chúc Mừng Ngày 20/10</h3>
+                <span class="text-[9px] sm:text-[11px] tracking-widest text-rose-300 font-bold uppercase block">Gửi Người Yêu Thương</span>
+                <h3 class="text-base sm:text-lg lg:text-xl font-serif font-bold text-white">Chúc Mừng Ngày 20/10</h3>
               </div>
             </div>
-            <div class="text-2xl text-rose-400 animate-pulse">
+            <div class="text-xl sm:text-2xl text-rose-400 animate-pulse">
               <i class="fa-solid fa-heart"></i>
             </div>
           </div>
 
           <!-- Typewriter Letter Content -->
-          <div class="py-5 sm:py-6">
+          <div class="py-3 sm:py-5">
             <!-- Highlight Main Wish (Requirement) -->
-            <div class="p-4 rounded-2xl bg-gradient-to-r from-rose-500/15 via-pink-500/10 to-amber-500/15 border border-rose-400/30 mb-4">
-              <p id="typewriter-highlight" class="text-lg sm:text-xl font-serif font-bold text-amber-200 leading-relaxed"></p>
+            <div class="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-rose-500/15 via-pink-500/10 to-amber-500/15 border border-rose-400/30 mb-2.5 sm:mb-4">
+              <p id="typewriter-highlight" class="text-sm sm:text-lg lg:text-xl font-serif font-bold text-amber-200 leading-snug sm:leading-relaxed"></p>
             </div>
 
             <!-- Extended Sweet Letter Body -->
-            <p id="typewriter-body" class="text-sm sm:text-base text-rose-100/90 font-light leading-relaxed min-h-[90px]"></p>
+            <p id="typewriter-body" class="text-xs sm:text-sm lg:text-base text-rose-100/90 font-light leading-relaxed min-h-[60px] sm:min-h-[80px]"></p>
           </div>
 
           <!-- Action Buttons Bar -->
-          <div class="pt-4 border-t border-rose-500/20 flex flex-wrap items-center justify-between gap-3">
+          <div class="pt-3 sm:pt-4 border-t border-rose-500/20 flex flex-col xs:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
             
             <!-- Send Hearts Button -->
-            <button id="btn-heart" class="flex-1 sm:flex-none flex items-center justify-center gap-2.5 px-6 py-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-medium text-sm shadow-[0_0_20px_rgba(255,77,109,0.5)] transform hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer">
+            <button id="btn-heart" class="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-medium text-xs sm:text-sm shadow-[0_0_20px_rgba(255,77,109,0.5)] transform hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer">
               <i class="fa-solid fa-heart text-amber-300 animate-ping" style="animation-duration: 1.5s"></i>
               <span>Gửi Triệu Trái Tim</span>
-              <span id="heart-counter" class="px-2 py-0.5 rounded-full bg-black/25 text-xs text-amber-200 font-bold">9999+</span>
+              <span id="heart-counter" class="px-2 py-0.5 rounded-full bg-black/25 text-[11px] sm:text-xs text-amber-200 font-bold">9999+</span>
             </button>
 
             <!-- Replay Button -->
-            <button id="btn-replay" class="flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white font-medium text-sm border border-white/20 transition-all duration-300 cursor-pointer">
+            <button id="btn-replay" class="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white font-medium text-xs sm:text-sm border border-white/20 transition-all duration-300 cursor-pointer">
               <i class="fa-solid fa-rotate-right"></i>
               <span>Xem Lại</span>
             </button>
@@ -356,10 +366,10 @@
         
         // Romantic Chords: Fmaj7 -> G -> Em7 -> Am7
         this.chords = [
-          [174.61, 261.63, 329.63, 392.00, 440.00], // F3, C4, E4, G4, A4
-          [196.00, 246.94, 293.66, 392.00, 493.88], // G3, B3, D4, G4, B4
-          [164.81, 246.94, 329.63, 392.00, 493.88], // E3, B3, E4, G4, B4
-          [220.00, 261.63, 329.63, 392.00, 523.25]  // A3, C4, E4, G4, C5
+          [174.61, 261.63, 329.63, 392.00, 440.00],
+          [196.00, 246.94, 293.66, 392.00, 493.88],
+          [164.81, 246.94, 329.63, 392.00, 493.88],
+          [220.00, 261.63, 329.63, 392.00, 523.25]
         ];
       }
 
@@ -368,12 +378,10 @@
           const AudioContext = window.AudioContext || window.webkitAudioContext;
           this.ctx = new AudioContext();
           
-          // Master Gain & Reverb Filter
           this.masterGain = this.ctx.createGain();
           this.masterGain.gain.setValueAtTime(0.4, this.ctx.currentTime);
           this.masterGain.connect(this.ctx.destination);
 
-          // Delay for soft ambient echo
           this.delay = this.ctx.createDelay();
           this.delay.delayTime.setValueAtTime(0.35, this.ctx.currentTime);
           this.delayFeedback = this.ctx.createGain();
@@ -398,7 +406,6 @@
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, time);
 
-        // Detuned soft triangle for warm piano warmth
         osc2.type = 'triangle';
         osc2.frequency.setValueAtTime(freq * 1.002, time);
 
@@ -434,13 +441,11 @@
           const chord = this.chords[this.chordIdx % this.chords.length];
           this.chordIdx++;
 
-          // Roll notes of the chord
           chord.forEach((freq, idx) => {
             const noteTime = now + idx * 0.28;
             this.playNote(freq, noteTime, 1.8, idx === 0 ? 0.22 : 0.14);
           });
 
-          // Occasional high sparkle note
           if (Math.random() > 0.4) {
             const highFreq = chord[Math.floor(Math.random() * chord.length)] * 2;
             this.playNote(highFreq, now + 1.2, 1.2, 0.08);
@@ -465,7 +470,6 @@
         return this.isMuted;
       }
 
-      // Sound Effects
       playWarpSound() {
         if (!this.ctx || this.isMuted) return;
         const now = this.ctx.currentTime;
@@ -534,24 +538,44 @@
     const soundEngine = new RomanticAudioEngine();
 
     /* =========================================================
-       THREE.JS SCENE SETUP: STARFIELD, EARTH, PARTICLES
+       THREE.JS SCENE SETUP (RESPONSIVE CAMERA & RESOLUTION)
        ========================================================= */
     const canvas = document.getElementById('webgl-canvas');
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
-    camera.position.set(0, 120, 1000);
+    const aspect = window.innerWidth / window.innerHeight;
+    const isMobileInit = aspect < 1;
+    const camera = new THREE.PerspectiveCamera(isMobileInit ? 52 : 45, aspect, 0.1, 5000);
+    
+    // Initial camera position calculated based on aspect ratio
+    const initialZ = isMobileInit ? 1350 : 1000;
+    camera.position.set(0, 120, initialZ);
 
-    // Ambient & Directional Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene = new THREE.Scene();
     scene.add(ambientLight);
 
     const sunLight = new THREE.DirectionalLight(0xfff6e6, 1.4);
     sunLight.position.set(300, 200, 400);
     scene.add(sunLight);
+
+    // Responsive Camera Distance Calculator
+    function getTargetCameraZ(baseZ = 145) {
+      const curAspect = window.innerWidth / window.innerHeight;
+      if (curAspect < 0.6) {
+        // Narrow smartphone screen (iPhone / Android)
+        return baseZ * 1.55;
+      } else if (curAspect < 1.0) {
+        // Tablet portrait
+        return baseZ * 1.3;
+      } else if (curAspect < 1.3) {
+        // 4:3 or small laptop
+        return baseZ * 1.1;
+      }
+      return baseZ;
+    }
 
     /* ---------------------------------------------------------
        1. STARFIELD (Three.js Galaxy Particles)
@@ -627,7 +651,6 @@
       cvs.width = 2048; cvs.height = 1024;
       const ctx = cvs.getContext('2d');
 
-      // Ocean Background
       const oceanGrad = ctx.createLinearGradient(0, 0, 0, cvs.height);
       oceanGrad.addColorStop(0, '#091c38');
       oceanGrad.addColorStop(0.5, '#07152b');
@@ -635,7 +658,6 @@
       ctx.fillStyle = oceanGrad;
       ctx.fillRect(0, 0, cvs.width, cvs.height);
 
-      // Lat/Lon subtle grid
       ctx.strokeStyle = 'rgba(116, 185, 255, 0.08)';
       ctx.lineWidth = 1;
       for (let lat = -80; lat <= 80; lat += 20) {
@@ -673,7 +695,6 @@
         }
       }
 
-      // Continents
       const eurasia = [
         [-10,36], [0,45], [10,55], [30,70], [60,70], [100,75], [140,70], [170,65], [180,60],
         [170,55], [145,45], [135,35], [122,30], [120,22], [109,18], [105,10], [100,2], [98,8],
@@ -701,7 +722,6 @@
         drawPolygon(poly, '#1b3b2c', '#2c5942');
       });
 
-      // VIETNAM HIGH-DETAIL S-CURVE HIGHLIGHT
       const vietnamS = [
         [102.1, 22.5], [103.8, 22.8], [105.3, 23.4], [106.7, 23.0], [108.0, 21.5], 
         [106.8, 20.8], [105.8, 18.7], [106.5, 17.5], [107.5, 16.5], [108.3, 15.5], 
@@ -711,14 +731,12 @@
       ];
       drawPolygon(vietnamS, '#059669', '#fbbf24');
 
-      // Archipelagos: Hoàng Sa & Trường Sa
       const hs = toPx(112.0, 16.5);
       const ts = toPx(114.0, 10.0);
       ctx.fillStyle = '#fbbf24';
       ctx.beginPath(); ctx.arc(hs[0], hs[1], 4, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.arc(ts[0], ts[1], 4, 0, Math.PI * 2); ctx.fill();
 
-      // Bến Cát Coordinate Glowing Beacon on Canvas
       const [bcX, bcY] = toPx(106.6087, 11.1611);
       ctx.fillStyle = '#ff4d6d';
       ctx.beginPath(); ctx.arc(bcX, bcY, 5, 0, Math.PI * 2); ctx.fill();
@@ -733,7 +751,6 @@
     const earthGroup = new THREE.Group();
     scene.add(earthGroup);
 
-    // Earth Sphere Mesh
     const earthGeo = new THREE.SphereGeometry(EARTH_RADIUS, 64, 64);
     const earthMat = new THREE.MeshStandardMaterial({
       map: createEarthTexture(),
@@ -743,7 +760,6 @@
     const earthMesh = new THREE.Mesh(earthGeo, earthMat);
     earthGroup.add(earthMesh);
 
-    // Earth Atmosphere Halo Shader
     const atmosphereMat = new THREE.ShaderMaterial({
       vertexShader: `
         varying vec3 vNormal;
@@ -782,7 +798,6 @@
     const benCatPos = latLonToVector3(11.1611, 106.6087, EARTH_RADIUS);
     const benCatNormal = benCatPos.clone().normalize();
 
-    // Beacon Light Beam (Cylinder shooting out into space)
     const beamGeo = new THREE.CylinderGeometry(0.3, 3.5, 30, 16);
     const beamMat = new THREE.MeshBasicMaterial({
       color: 0xff4d6d,
@@ -795,7 +810,6 @@
     beaconBeam.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), benCatNormal);
     earthGroup.add(beaconBeam);
 
-    // Pulsing Concentric Beacon Rings
     const ringGeo = new THREE.RingGeometry(1, 3.5, 32);
     const ringMat = new THREE.MeshBasicMaterial({
       color: 0xffd166,
@@ -809,7 +823,6 @@
     beaconRing.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), benCatNormal);
     earthGroup.add(beaconRing);
 
-    // Beacon Point Light
     const beaconLight = new THREE.PointLight(0xff4d6d, 3, 50);
     beaconLight.position.copy(benCatPos).add(benCatNormal.clone().multiplyScalar(2));
     earthGroup.add(beaconLight);
@@ -818,15 +831,15 @@
        4. SCENE 3: PARTICLE MORPHING ENGINE (Street View -> Girlfriend)
        --------------------------------------------------------- */
     const GRID_SIZE = 50;
-    const PARTICLE_COUNT = GRID_SIZE * GRID_SIZE; // 2500
+    const PARTICLE_COUNT = GRID_SIZE * GRID_SIZE;
 
     const morphGeo = new THREE.BufferGeometry();
     const morphPositions = new Float32Array(PARTICLE_COUNT * 3);
     const morphColors = new Float32Array(PARTICLE_COUNT * 3);
     const morphSizes = new Float32Array(PARTICLE_COUNT);
 
-    const posA = []; // Streetview 4:3 grid
-    const posB = []; // Girlfriend portrait 9:16 grid
+    const posA = [];
+    const posB = [];
     const velocities = [];
     const colorsA = [];
     const colorsB = [];
@@ -838,19 +851,16 @@
       for (let c = 0; c < GRID_SIZE; c++) {
         const i = r * GRID_SIZE + c;
 
-        // Street View Aspect (w: 52, h: 39)
         const xA = (c - GRID_SIZE / 2) * 1.05;
         const yA = (GRID_SIZE / 2 - r) * 0.78;
         const zA = 0;
         posA.push(new THREE.Vector3(xA, yA, zA));
 
-        // Girlfriend Portrait Aspect (w: 36, h: 64)
         const xB = (c - GRID_SIZE / 2) * 0.72;
         const yB = (GRID_SIZE / 2 - r) * 1.28;
         const zB = 0;
         posB.push(new THREE.Vector3(xB, yB, zB));
 
-        // Explosion velocity in 3D
         const angle = Math.random() * Math.PI * 2;
         const speed = 15 + Math.random() * 35;
         const vx = Math.cos(angle) * speed;
@@ -858,7 +868,6 @@
         const vz = (Math.random() - 0.4) * speed * 1.5;
         velocities.push(new THREE.Vector3(vx, vy, vz));
 
-        // Colors from hex
         const svR = parseInt(svHex.substr(i * 6, 2), 16) / 255 || 0.8;
         const svG = parseInt(svHex.substr(i * 6 + 2, 2), 16) / 255 || 0.6;
         const svB = parseInt(svHex.substr(i * 6 + 4, 2), 16) / 255 || 0.5;
@@ -897,6 +906,10 @@
     morphParticleMesh.position.set(0, 0, 40);
     scene.add(morphParticleMesh);
 
+    // Initial responsive scale for morph particles
+    const initParticleScale = isMobileInit ? Math.min(window.innerWidth / 480, 0.85) : 1.0;
+    morphParticleMesh.scale.set(initParticleScale, initParticleScale, initParticleScale);
+
     const morphCtrl = {
       progress: 0,
       explode: 0,
@@ -923,9 +936,9 @@
       reset(initial = false) {
         this.x = Math.random() * flowerCanvas.width;
         this.y = initial ? Math.random() * flowerCanvas.height : -30;
-        this.size = 12 + Math.random() * 16;
-        this.vy = 1.2 + Math.random() * 2.2;
-        this.vx = (Math.random() - 0.5) * 1.5;
+        this.size = (window.innerWidth < 640 ? 10 : 13) + Math.random() * 14;
+        this.vy = 1.1 + Math.random() * 2.0;
+        this.vx = (Math.random() - 0.5) * 1.4;
         this.angleX = Math.random() * Math.PI * 2;
         this.angleY = Math.random() * Math.PI * 2;
         this.angleZ = Math.random() * Math.PI * 2;
@@ -978,8 +991,8 @@
       reset(initial = false) {
         this.x = Math.random() * flowerCanvas.width;
         this.y = initial ? Math.random() * flowerCanvas.height : flowerCanvas.height + 30;
-        this.size = 10 + Math.random() * 18;
-        this.vy = -(0.8 + Math.random() * 1.5);
+        this.size = (window.innerWidth < 640 ? 8 : 11) + Math.random() * 15;
+        this.vy = -(0.8 + Math.random() * 1.4);
         this.vx = (Math.random() - 0.5) * 0.8;
         this.opacity = 0.4 + Math.random() * 0.5;
         this.pulse = Math.random() * Math.PI;
@@ -1001,7 +1014,7 @@
 
         ctx.fillStyle = '#ff4d6d';
         ctx.shadowColor = '#ff758f';
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 12;
 
         ctx.beginPath();
         const s = this.size;
@@ -1024,7 +1037,7 @@
     }
     resizeBurstCanvas();
 
-    function createHeartBurst(originX, originY, count = 35) {
+    function createHeartBurst(originX, originY, count = 30) {
       soundEngine.playHeartPop();
       for (let i = 0; i < count; i++) {
         const angle = Math.random() * Math.PI * 2;
@@ -1034,16 +1047,18 @@
           y: originY,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed - 2.5,
-          size: 10 + Math.random() * 16,
+          size: 9 + Math.random() * 15,
           life: 1.0,
-          decay: 0.015 + Math.random() * 0.02,
+          decay: 0.016 + Math.random() * 0.02,
           color: ['#ff4d6d', '#ffd166', '#ff758f', '#ffffff'][Math.floor(Math.random() * 4)]
         });
       }
     }
 
-    const petals = Array.from({ length: 65 }, () => new RosePetal());
-    const hearts = Array.from({ length: 30 }, () => new FloatingHeart());
+    const petalCount = window.innerWidth < 640 ? 45 : 65;
+    const heartCountInit = window.innerWidth < 640 ? 20 : 30;
+    const petals = Array.from({ length: petalCount }, () => new RosePetal());
+    const hearts = Array.from({ length: heartCountInit }, () => new FloatingHeart());
 
     /* =========================================================
        ANIMATION & RENDER LOOP
@@ -1056,20 +1071,16 @@
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
 
-      // Starfield subtle rotation & twinkle
       starField.rotation.y = time * 0.015;
       starField.rotation.x = Math.sin(time * 0.01) * 0.05;
 
-      // Pulse beacon ring
       ringScale += delta * 1.5;
       if (ringScale > 3.0) ringScale = 0.8;
       beaconRing.scale.set(ringScale, ringScale, ringScale);
       beaconRing.material.opacity = Math.max(0, 1 - (ringScale - 0.8) / 2.2);
 
-      // Light beam pulsation
       beaconBeam.material.opacity = 0.5 + Math.sin(time * 6) * 0.35;
 
-      // Particle Morphing Update
       if (morphCtrl.opacity > 0.01) {
         morphMat.opacity = morphCtrl.opacity;
         const positions = morphGeo.attributes.position.array;
@@ -1198,13 +1209,15 @@
       const masterTL = gsap.timeline();
 
       // SCENE 1: FLY THROUGH GALAXY & ZOOM TO VIETNAM / BẾN CÁT
+      // Dynamically calculate target Z for mobile vs laptop
+      const targetZ = getTargetCameraZ(145);
       const quatObj = { t: 0 };
       const startQuat = earthGroup.quaternion.clone();
 
       masterTL.to(camera.position, {
         x: 0,
         y: 15,
-        z: 145,
+        z: targetZ,
         duration: 4.8,
         ease: 'power3.inOut'
       }, 0);
@@ -1235,7 +1248,11 @@
         gsap.to(streetviewCard, { scale: 1.15, opacity: 0, duration: 0.4, ease: 'power2.in' });
         gsap.to(coordBadge, { opacity: 0, y: -20, duration: 0.4 });
 
-        morphParticleMesh.position.set(0, 0, 75);
+        // Adapt particle plane position to screen aspect ratio
+        const curAspect = window.innerWidth / window.innerHeight;
+        const particleZ = curAspect < 1 ? 55 : 75;
+        morphParticleMesh.position.set(0, 0, particleZ);
+
         morphCtrl.opacity = 1;
         morphCtrl.explode = 0;
         morphCtrl.swirl = 0;
@@ -1270,7 +1287,7 @@
       screenFinal.style.pointerEvents = 'auto';
       gsap.to(screenFinal, { opacity: 1, duration: 1.2, ease: 'power2.out' });
 
-      createHeartBurst(window.innerWidth / 2, window.innerHeight / 2, 45);
+      createHeartBurst(window.innerWidth / 2, window.innerHeight / 2, 40);
       startTypewriter();
     }
 
@@ -1285,7 +1302,7 @@
 
       function typeMain() {
         if (idx1 < mainWish.length) {
-          typewriterHighlight.innerHTML = mainWish.substring(0, idx1 + 1) + '<span class="inline-block w-2 h-5 bg-amber-300 ml-1 animate-pulse"></span>';
+          typewriterHighlight.innerHTML = mainWish.substring(0, idx1 + 1) + '<span class="inline-block w-2 h-4 sm:h-5 bg-amber-300 ml-1 animate-pulse"></span>';
           soundEngine.playTypeClick();
           idx1++;
           setTimeout(typeMain, 45);
@@ -1297,7 +1314,7 @@
 
       function typeBody() {
         if (idx2 < extendedLetter.length) {
-          typewriterBody.innerHTML = extendedLetter.substring(0, idx2 + 1) + '<span class="inline-block w-2 h-4 bg-rose-400 ml-1 animate-pulse"></span>';
+          typewriterBody.innerHTML = extendedLetter.substring(0, idx2 + 1) + '<span class="inline-block w-1.5 h-3.5 sm:h-4 bg-rose-400 ml-1 animate-pulse"></span>';
           if (idx2 % 2 === 0) soundEngine.playTypeClick();
           idx2++;
           setTimeout(typeBody, 35);
@@ -1312,7 +1329,10 @@
     /* =========================================================
        EVENT LISTENERS & INTERACTION CONTROLS
        ========================================================= */
-    document.getElementById('btn-start').addEventListener('click', (e) => {
+    const btnStart = document.getElementById('btn-start');
+    
+    // Support both Click and Touch for instant mobile response
+    btnStart.addEventListener('click', (e) => {
       createHeartBurst(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2, 25);
       runCinematicJourney();
     });
@@ -1325,12 +1345,13 @@
       heartCount += 1;
       heartCounter.textContent = heartCount + '+';
       const rect = btnHeart.getBoundingClientRect();
-      createHeartBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 30);
-      gsap.fromTo(btnHeart, { scale: 0.9 }, { scale: 1.05, duration: 0.3, ease: 'back.out(2)' });
+      createHeartBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 25);
+      gsap.fromTo(btnHeart, { scale: 0.95 }, { scale: 1.05, duration: 0.25, ease: 'back.out(2)' });
     });
 
     document.getElementById('btn-replay').addEventListener('click', () => {
-      gsap.to(camera.position, { x: 0, y: 120, z: 1000, duration: 1.5, ease: 'power2.inOut' });
+      const resetZ = window.innerWidth / window.innerHeight < 1 ? 1350 : 1000;
+      gsap.to(camera.position, { x: 0, y: 120, z: resetZ, duration: 1.5, ease: 'power2.inOut' });
       gsap.to(screenFinal, { opacity: 0, duration: 0.8 });
       gsap.to(flowerCanvas, { opacity: 0, duration: 0.8 });
       gsap.to(screenCoord, { opacity: 0, duration: 0.8 });
@@ -1345,32 +1366,52 @@
     btnAudio.addEventListener('click', () => {
       const isMuted = soundEngine.toggleMute();
       if (isMuted) {
-        audioIcon.className = 'fa-solid fa-volume-xmark text-sm text-slate-400';
+        audioIcon.className = 'fa-solid fa-volume-xmark text-xs sm:text-sm text-slate-400';
         eqBars.style.opacity = '0.3';
       } else {
-        audioIcon.className = 'fa-solid fa-volume-high text-sm text-rose-400';
+        audioIcon.className = 'fa-solid fa-volume-high text-xs sm:text-sm text-rose-400';
         eqBars.style.opacity = '1';
         if (!soundEngine.isPlaying) soundEngine.startMelody();
       }
     });
 
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
+    // Dynamic resize handler (Window resize & Phone orientation change)
+    function onWindowResize() {
+      const newAspect = window.innerWidth / window.innerHeight;
+      camera.aspect = newAspect;
+      camera.fov = newAspect < 1 ? 52 : 45;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+      
+      const pScale = newAspect < 1 ? Math.min(window.innerWidth / 480, 0.85) : 1.0;
+      morphParticleMesh.scale.set(pScale, pScale, pScale);
+
       resizeFlowerCanvas();
       resizeBurstCanvas();
-    });
+    }
+    window.addEventListener('resize', onWindowResize);
+    window.addEventListener('orientationchange', () => setTimeout(onWindowResize, 200));
 
+    // Mouse Move Parallax (Laptop/Desktop)
     window.addEventListener('mousemove', (e) => {
+      if (isPlayingStory) return;
       const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
       const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-      if (!isPlayingStory) {
-        camera.position.x = mouseX * 30;
-        camera.position.y = 120 - mouseY * 20;
-        camera.lookAt(0, 0, 0);
-      }
+      camera.position.x = mouseX * 30;
+      camera.position.y = 120 - mouseY * 20;
+      camera.lookAt(0, 0, 0);
     });
+
+    // Touch Move Parallax (Smartphones/Tablets)
+    window.addEventListener('touchmove', (e) => {
+      if (isPlayingStory || !e.touches[0]) return;
+      const touch = e.touches[0];
+      const touchX = (touch.clientX / window.innerWidth - 0.5) * 2;
+      const touchY = (touch.clientY / window.innerHeight - 0.5) * 2;
+      camera.position.x = touchX * 20;
+      camera.position.y = 120 - touchY * 15;
+      camera.lookAt(0, 0, 0);
+    }, { passive: true });
   </script>
 </body>
 </html>
